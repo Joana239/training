@@ -226,6 +226,7 @@ function renderPool(){let el=document.getElementById('pool');if(!view.pool){el&&
     <p style="margin:2px 0 0;opacity:.9;font-size:14px">${esc(st.name)}: tippe eine Übung an, um sie zu ${esc(p?p.name:'diesem Plan')} hinzuzufügen.</p></div>
     ${used.length?`<div class="chips" style="margin:14px 0 4px">${catChips('poolCat',view.poolCat,used)}</div>`:''}
     ${groups.length?groups.map(g=>`<div class="grp-t">${g.c?esc(g.c):'Ohne Kategorie'}</div>${g.items.map(row).join('')}`).join(''):'<p class="muted">Die Sammlung ist leer.</p>'}
+    <button class="btn wide" style="margin-top:6px" data-act="newPool">Neue Übung in die Sammlung</button>
     <div style="height:8px"></div><button class="btn fill wide pool-done" data-act="closePool">Fertig</button></div>`}
 const DEFCATS=['Brust','Schulter','Hintere Schulter','Bizeps','Trizeps','Beine','Po','Latissimus'];
 const cats=()=>{if(!Array.isArray(S.settings.cats))S.settings.cats=DEFCATS.slice();return S.settings.cats};
@@ -321,7 +322,7 @@ function renderEdit(p){const list=live(p.exercises);const main=document.getEleme
     <button class="btn danger" style="margin-left:auto" data-act="remove" data-ex="${ex.id}">Entfernen</button></div>
     <label class="field"><span>Verschieben nach</span><select class="text" data-e="move" data-ex="${ex.id}"><option value="">Plan wählen …</option>
       ${plans().filter(q=>q.id!==p.id).map(q=>`<option value="${q.id}">Plan ${LET[plans().indexOf(q)]}: ${esc(q.name)}</option>`).join('')}<option value="pool">Zurück in die Sammlung</option></select></label></section>`).join('')+
-    `${(studio().pool||[]).length?`<button class="btn fill wide" style="height:48px;margin-bottom:10px" data-act="openPool">Aus Sammlung hinzufügen (${studio().pool.length})</button>`:''}
+    `<button class="btn fill wide" style="height:48px;margin-bottom:10px" data-act="openPool">Aus Sammlung hinzufügen (${(studio().pool||[]).length})</button>
     <button class="btn wide" style="height:48px" data-act="add">Neue Übung anlegen</button>
     <p class="muted" style="text-align:center">Tipp: Gib einer Übung im selben Studio immer denselben Namen, dann laufen ihre Werte über alle Programme in einer Kurve. Entfernte Übungen wandern zurück in die Sammlung, ihr Verlauf bleibt erhalten.</p>`}
 
@@ -481,6 +482,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
   else if(a==='progCat'){view.progCat=v;renderProgress()}
   else if(a==='addCat'){const n=(prompt('Name der neuen Kategorie')||'').trim();if(!n||cats().includes(n))return;cats().push(n);saveData();render()}
   else if(a==='delCat'){const c=cats()[+v];if(!confirm(`Kategorie „${c}“ entfernen? Die Übungen bleiben erhalten, nur ohne Kategorie.`))return;cats().splice(+v,1);allEx().forEach(x=>{if(x.ex.cat===c)x.ex.cat=''});saveData();render()}
+  else if(a==='newPool'){const ex={id:uid(),name:'Neue Übung',note:'',sets:3,drops:0,ss:null,img:null,cat:''};st.pool.push(ex);saveData();view.pool=false;renderPool();render();toast('In der Sammlung angelegt, jetzt im Plan bearbeiten');return}
   else if(a==='openPool'){view.pool=true;renderPool()}
   else if(a==='closePool'){view.pool=false;renderPool();render()}
   else if(a==='takePool'){const ex=st.pool.find(x=>x.id===v);if(!ex)return;st.pool.splice(st.pool.indexOf(ex),1);delete ex.archived;p.exercises.push(ex);saveData();renderPool();toast(`„${ex.name}“ hinzugefügt`)}
