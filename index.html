@@ -222,7 +222,13 @@ const plans=()=>live(program().plans);
 const plan=id=>{for(const st of S.studios)for(const pr of st.programs){const p=pr.plans.find(x=>x.id===id);if(p)return p}return null};
 function ensureCur(){S.studios.forEach(s=>{if(!s.pool)s.pool=[]});let st=studio();if(!st||st.archived){st=live(S.studios)[0];S.settings.cur.studio=st.id}
   let pr=program();if(!pr||pr.archived){pr=live(st.programs)[0];if(!pr){pr={id:uid(),name:'Neues Programm',plans:[{id:uid(),name:'Plan A',color:'wein',exercises:[]}]};st.programs.push(pr)}S.settings.cur.program=pr.id}
-  if(!live(pr.plans).length)pr.plans.push({id:uid(),name:'Plan A',color:'wein',exercises:[]})}
+  if(!live(pr.plans).length)pr.plans.push({id:uid(),name:'Plan A',color:'wein',exercises:[]});syncPool()}
+function copyOf(ex){return{id:uid(),name:(ex.name||'').trim(),note:ex.note||'',sets:ex.sets||3,drops:ex.drops||0,cat:ex.cat||'',img:ex.img||null,ss:ex.ss?{name:ex.ss.name,img:ex.ss.img||null}:null}}
+function syncPool(){for(const st of live(S.studios)){st.pool=st.pool||[];const have=new Set(st.pool.map(e=>norm(e.name)));
+  for(const pr of live(st.programs))for(const pl of live(pr.plans))for(const ex of live(pl.exercises)){const n=norm(ex.name);if(!n||have.has(n))continue;have.add(n);st.pool.push(copyOf(ex))}}}
+function inPlans(ex){const n=norm(ex.name);if(!n)return[];return plans().map((q,i)=>live(q.exercises).some(e=>norm(e.name)===n)?LET[i]:null).filter(Boolean)}
+function dropFromPlan(ex){const st=studio();for(const pr of st.programs)for(const pl of pr.plans){const i=pl.exercises.indexOf(ex);if(i>=0)pl.exercises.splice(i,1)}
+  if(lastSessions([ex.id],1).length){ex.archived=true;(st.trash=st.trash||[]).push(ex)}}
 function allEx(){const o=[];for(const st of S.studios)for(const pr of st.programs)for(const pl of pr.plans)for(const ex of pl.exercises)o.push({ex,pl,pr,st,arch:!!(ex.archived||pl.archived||pr.archived||st.archived)});
   for(const st of S.studios)for(const ex of st.pool||[])o.push({ex,pl:null,pr:null,st,arch:!!st.archived,pool:true});
   for(const st of S.studios)for(const ex of st.trash||[])o.push({ex,pl:null,pr:null,st,arch:true});return o}
@@ -252,9 +258,9 @@ function renderPoolList(){const box=document.getElementById('poolList');if(!box)
   const groups=[...cats(),''].filter(c=>!pc||c===pc).map(c=>({c,items:st.pool.filter(e=>inGroup(e,c)&&poolMatch(e,q))})).filter(g=>g.items.length);
   const row=ex=>`<div class="prow" ${canDrag?`data-drag="pool" data-id="${ex.id}"`:''}><button class="opt" data-act="editEx" data-v="${ex.id}">
       <span class="photo" style="width:48px;height:48px;border-radius:10px">${ex.img&&IMG[ex.img]?`<img src="${IMG[ex.img]}" alt="">`:''}</span>
-      <span style="flex:1;min-width:0"><b>${esc(ex.name||'Ohne Namen')}</b>${ex.note?`<span class="sub" style="display:block">${esc(ex.note)}</span>`:''}</span>
+      <span style="flex:1;min-width:0"><b>${esc(ex.name||'Ohne Namen')}</b>${ex.note?`<span class="sub" style="display:block">${esc(ex.note)}</span>`:''}${(u=>u.length?`<span class="sub" style="display:block;color:#56664f;font-weight:600">In Plan ${u.join(', ')}</span>`:'')(inPlans(ex))}</span>
       ${canDrag?`<span class="grip">${GRIP}</span>`:''}</button>
-      ${adding?`<button class="btn pool-add" data-act="takePool" data-v="${ex.id}" aria-label="In ${esc(p.name)} holen">+</button>`:''}</div>`;
+      ${adding?(live(p.exercises).some(e=>norm(e.name)===norm(ex.name))?`<span class="btn pool-add" style="opacity:.45;border-style:dashed" aria-label="Schon im Plan">✓</span>`:`<button class="btn pool-add" data-act="takePool" data-v="${ex.id}" aria-label="In ${esc(p.name)} holen">+</button>`):''}</div>`;
   box.innerHTML=groups.length?groups.map(g=>`<div class="grp-t">${g.c?esc(g.c):'Ohne Kategorie'}</div><div data-list="pool">${g.items.map(row).join('')}</div>`).join('')
     :`<p class="muted" style="margin:14px 2px">${st.pool.length?'Keine Übung gefunden.':'Die Sammlung ist leer. Leg eine neue Übung an oder lade eine Übungsdatei in den Einstellungen.'}</p>`}
 function renderExSheet(){let el=document.getElementById('exSheet');const ex=view.exSheet&&findEx(view.exSheet);if(!ex){el&&el.remove();return}
@@ -269,10 +275,10 @@ function renderExSheet(){let el=document.getElementById('exSheet');const ex=view
     <label class="field"><span>Dropsätze</span>${selectHtml(`data-e="drops" data-ex="${ex.id}"`,ex.drops,[0,1,2,3])}</label></div>
     <label class="check"><input type="checkbox" data-e="ssOn" data-ex="${ex.id}" ${ex.ss?'checked':''}> Supersatz mit anderer Übung</label>
     ${ex.ss?`<label class="field" style="margin-top:0"><span>Supersatz-Übung</span><input class="text" data-e="ssName" data-ex="${ex.id}" value="${esc(ex.ss.name)}" placeholder="Liegestütze"></label>`:''}
-    ${inPool?`<label class="field"><span>In Plan übernehmen</span><select class="text" data-e="move" data-ex="${ex.id}"><option value="">Plan wählen …</option>
-      ${pl.map((q,i)=>`<option value="${q.id}">Plan ${LET[i]}: ${esc(q.name)}</option>`).join('')}</select></label>`:''}
+    ${inPool?`${(u=>u.length?`<p class="also" style="margin:12px 2px 0">Steht in Plan ${u.join(', ')}.</p>`:'')(inPlans(ex))}<label class="field"><span>Zu Plan hinzufügen</span><select class="text" data-e="addTo" data-ex="${ex.id}"><option value="">Plan wählen …</option>
+      ${pl.filter(q=>!live(q.exercises).some(e=>norm(e.name)===norm(ex.name))).map(q=>`<option value="${q.id}">Plan ${LET[pl.indexOf(q)]}: ${esc(q.name)}</option>`).join('')}</select></label>`:''}
     <button class="btn fill wide pool-done" style="margin-top:14px;height:46px" data-act="closeEx">Fertig</button>
-    ${inPool&&!view.exNew?`<button class="btn danger wide" style="margin-top:10px" data-act="delPool" data-v="${ex.id}">Aus der Sammlung löschen</button>`:''}</div>`}
+    ${inPool&&!view.exNew?`<button class="btn danger wide" style="margin-top:10px" data-act="delPool" data-v="${ex.id}">Übung ganz löschen</button>`:''}</div>`}
 function closeExSheet(){const ex=view.exSheet&&findEx(view.exSheet);const st=studio();
   if(ex&&!ex.name.trim()){const i=st.pool.indexOf(ex);if(view.exNew&&i>=0&&!ex.img&&!ex.note){st.pool.splice(i,1)}else ex.name='Neue Übung'}
   view.exSheet=null;view.exNew=false;saveData();renderExSheet();renderPool();render()}
@@ -372,11 +378,11 @@ function renderEdit(p){const list=live(p.exercises);const main=document.getEleme
     <label class="field"><span>Auch in anderen Plan aufnehmen</span><select class="text" data-e="copyTo" data-ex="${ex.id}"><option value="">Plan wählen …</option>
       ${plans().filter(q=>q.id!==p.id).map(q=>`<option value="${q.id}">Plan ${LET[plans().indexOf(q)]}: ${esc(q.name)}</option>`).join('')}</select></label>
     <label class="field"><span>Verschieben nach</span><select class="text" data-e="move" data-ex="${ex.id}"><option value="">Plan wählen …</option>
-      ${plans().filter(q=>q.id!==p.id).map(q=>`<option value="${q.id}">Plan ${LET[plans().indexOf(q)]}: ${esc(q.name)}</option>`).join('')}<option value="pool">Zurück in die Sammlung</option></select></label>
+      ${plans().filter(q=>q.id!==p.id).map(q=>`<option value="${q.id}">Plan ${LET[plans().indexOf(q)]}: ${esc(q.name)}</option>`).join('')}</select></label>
     <div class="order"><button class="btn danger" style="margin-left:auto" data-act="remove" data-ex="${ex.id}">Entfernen</button></div></section>`}).join('')+
     `<button class="btn fill wide" style="height:48px;margin-bottom:10px" data-act="openPool">Aus Sammlung hinzufügen (${(studio().pool||[]).length})</button>
     <button class="btn wide" style="height:48px" data-act="add">Neue Übung anlegen</button>
-    <p class="muted" style="text-align:center">Karte lange halten und ziehen, um die Reihenfolge zu ändern. Übungen mit gleichem Namen zählen in allen Plänen als eine Übung, ihr Verlauf läuft zusammen.</p>`}
+    <p class="muted" style="text-align:center">Karte lange halten und ziehen, um die Reihenfolge zu ändern. Übungen mit gleichem Namen zählen in allen Plänen als eine Übung, ihr Verlauf läuft zusammen. Alle Übungen bleiben immer in der Sammlung.</p>`}
 function alsoIn(ex,p){const n=norm(ex.name);if(!n)return[];const pl=plans();return pl.map((q,i)=>q!==p&&live(q.exercises).some(e=>norm(e.name)===n)?LET[i]:null).filter(Boolean)}
 
 function progressItems(){const groups={};for(const x of allEx()){const n=norm(x.ex.name);if(!n)continue;const k=x.st.id+'|'+n;
@@ -491,7 +497,8 @@ function resizeImage(file){return new Promise((res,rej)=>{const fr=new FileReade
   const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(im,0,0,w,h);res(cv.toDataURL('image/jpeg',.78))};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(file)})}
 document.getElementById('photoIn').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f||!photoTarget)return;
   try{const data=await resizeImage(f);const id='img_'+uid();IMG[id]=data;await store.set('img:'+id,data);
-    const ex=findEx(photoTarget.ex);const obj=photoTarget.ss?ex.ss:ex;if(obj.img&&!imgShared(obj.img,obj)){delete IMG[obj.img];store.del('img:'+obj.img)}obj.img=id;saveData();render()}catch(err){toast('Foto konnte nicht geladen werden')}});
+    const ex=findEx(photoTarget.ex);let objs=photoTarget.ss?[ex.ss]:groupIds(ex.id).map(findEx).filter(Boolean);const olds=[...new Set(objs.map(o=>o.img).filter(Boolean))];
+    objs.forEach(o=>o.img=id);for(const o of olds)if(!imgShared(o,null)){delete IMG[o];store.del('img:'+o)}saveData();render()}catch(err){toast('Foto konnte nicht geladen werden')}});
 
 function imgShared(id,self){return allEx().some(x=>(x.ex!==self&&x.ex.img===id)||(x.ex.ss&&x.ex.ss!==self&&x.ex.ss.img===id))}
 async function dupImg(id){if(!id||!IMG[id])return null;const n='img_'+uid();IMG[n]=IMG[id];await store.set('img:'+n,IMG[n]);return n}
@@ -528,8 +535,8 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
     const ins=document.querySelectorAll('[data-e="name"]');const last=ins[ins.length-1];last&&last.focus();last&&last.scrollIntoView({block:'center'})}
   else if(a==='up'||a==='down'){const arr=p.exercises;const act=live(arr);const i=act.findIndex(x=>x.id===exId);const j=a==='up'?i-1:i+1;if(j<0||j>=act.length)return;
     const ia=arr.indexOf(act[i]),ib=arr.indexOf(act[j]);[arr[ia],arr[ib]]=[arr[ib],arr[ia]];saveData();render()}
-  else if(a==='remove'){const ex=findEx(exId);if(!confirm(`„${ex.name||'Übung'}“ aus dem Plan nehmen? Sie kommt zurück in die Sammlung, der Verlauf bleibt erhalten.`))return;
-    moveEx(ex,'pool');saveData();render()}
+  else if(a==='remove'){const ex=findEx(exId);if(!confirm(`„${ex.name||'Übung'}“ aus diesem Plan nehmen? Sie bleibt in der Sammlung, der Verlauf bleibt erhalten.`))return;
+    dropFromPlan(ex);saveData();render()}
   else if(a==='progMode'){view.progMode=v;renderProgress()}
   else if(a==='progFilter'){view.progFilter=v;renderProgress()}
   else if(a==='poolCat'){view.poolCat=v;renderPool()}
@@ -541,9 +548,13 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
   else if(a==='closeEx'){closeExSheet()}
   else if(a==='openPool'){view.pool=true;renderPool()}
   else if(a==='closePool'){view.pool=false;view.poolQ='';renderPool();render()}
-  else if(a==='takePool'){const ex=st.pool.find(x=>x.id===v);if(!ex)return;st.pool.splice(st.pool.indexOf(ex),1);delete ex.archived;p.exercises.push(ex);saveData();renderPool();toast(`„${ex.name}“ hinzugefügt`)}
-  else if(a==='delPool'){const ex=st.pool.find(x=>x.id===v);if(!ex||!confirm(`„${ex.name}“ aus der Sammlung löschen? Ein vorhandener Verlauf bleibt im Fortschritt.`))return;
-    st.pool.splice(st.pool.indexOf(ex),1);if(lastSessions([ex.id],1).length){ex.archived=true;(st.trash=st.trash||[]).push(ex)}if(view.exSheet===ex.id){view.exSheet=null;renderExSheet()}saveData();renderPool()}
+  else if(a==='takePool'){const ex=st.pool.find(x=>x.id===v);if(!ex)return;if(live(p.exercises).some(e=>norm(e.name)===norm(ex.name))){toast('Schon in diesem Plan');return}
+    p.exercises.push(copyOf(ex));saveData();renderPool();toast(`„${ex.name}“ hinzugefügt`)}
+  else if(a==='delPool'){const ex=st.pool.find(x=>x.id===v);if(!ex)return;const u=inPlans(ex);
+    if(!confirm(`„${ex.name}“ löschen?${u.length?` Sie wird auch aus Plan ${u.join(', ')} entfernt.`:''} Der Verlauf bleibt im Fortschritt.`))return;
+    const n=norm(ex.name);for(const pr of st.programs)for(const pl of pr.plans)for(const e of live(pl.exercises).filter(e=>norm(e.name)===n))dropFromPlan(e);
+    st.pool.splice(st.pool.indexOf(ex),1);if(lastSessions([ex.id],1).length){ex.archived=true;(st.trash=st.trash||[]).push(ex)}
+    if(view.exSheet===ex.id){view.exSheet=null;renderExSheet()}saveData();render()}
   else if(a==='photo'||a==='photoss'){photoTarget={ex:exId,ss:a==='photoss'};document.getElementById('photoIn').click()}
   else if(a==='zoom'||a==='zoomss'){const ex=findEx(exId);const id=a==='zoom'?ex.img:ex.ss&&ex.ss.img;if(!id||!IMG[id])return;
     const lb=document.createElement('div');lb.className='lightbox';lb.innerHTML=`<img src="${IMG[id]}" alt="">`;lb.onclick=()=>lb.remove();document.body.appendChild(lb)}
@@ -574,7 +585,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
 document.addEventListener('input',e=>{const t=e.target;
   if(t.classList.contains('num')){const v=parseNum(t.value);const en=getEntry(view.tab,t.dataset.ex,true);const arr=en[t.dataset.p];const i=+t.dataset.i;arr[i]=arr[i]||[null,null];arr[i][+t.dataset.f]=v;
     if(t.dataset.f==='0'){const ph=parseNum(t.placeholder);t.classList.toggle('better',v!=null&&ph!=null&&v>ph)}saveData()}
-  else if(t.dataset.note){findEx(t.dataset.note).note=t.value;saveData()}
+  else if(t.dataset.note){for(const id of groupIds(t.dataset.note)){const x=findEx(id);if(x)x.note=t.value}saveData()}
   else if(t.id==='poolQ'){view.poolQ=t.value;renderPoolList()}
   else if(t.dataset.e==='name'){for(const id of (t._grp||[t.dataset.ex])){const x=findEx(id);if(x)x.name=t.value}saveData()}
   else if(t.dataset.e==='ssName'){findEx(t.dataset.ex).ss.name=t.value;saveData()}
@@ -588,7 +599,8 @@ document.addEventListener('change',async e=>{const t=e.target;
   if(t.dataset.e){const ex=findEx(t.dataset.ex);const k=t.dataset.e;
     if(k==='sets')ex.sets=+t.value;else if(k==='drops')ex.drops=+t.value;
     else if(k==='cat'){for(const id of groupIds(ex.id)){const x=findEx(id);if(x)x.cat=t.value}saveData();return}
-    else if(k==='copyTo'){if(!t.value)return;const dest=plan(t.value);dest.exercises.push({id:uid(),name:ex.name,note:ex.note,sets:ex.sets,drops:ex.drops,cat:ex.cat||'',img:await dupImg(ex.img),ss:ex.ss?{name:ex.ss.name,img:await dupImg(ex.ss.img)}:null});
+    else if(k==='addTo'){if(!t.value)return;const dest=plan(t.value);dest.exercises.push(copyOf(ex));saveData();renderExSheet();renderPool();toast(`Zu Plan ${LET[plans().indexOf(dest)]} hinzugefügt`);return}
+    else if(k==='copyTo'){if(!t.value)return;const dest=plan(t.value);if(live(dest.exercises).some(e=>norm(e.name)===norm(ex.name))){toast('Steht dort schon');t.value='';return}dest.exercises.push(copyOf(ex));
       saveData();render();toast(`Auch in Plan ${LET[plans().indexOf(dest)]} aufgenommen`);return}
     else if(k==='move'){if(!t.value)return;const dest=t.value;moveEx(ex,dest);if(view.exSheet===ex.id){view.exSheet=null;view.exNew=false}saveData();render();toast(dest==='pool'?'In die Sammlung verschoben':'Verschoben nach Plan '+LET[plans().indexOf(plan(dest))]);return}
     else if(k==='ssOn'){if(t.checked){ex.ss=ex._ss||{name:'',img:null};delete ex._ss}else{ex._ss=ex.ss;ex.ss=null}}
