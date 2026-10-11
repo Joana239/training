@@ -48,6 +48,11 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:1 0 auto;min-width:38px;text-align:center;border:1px solid color-mix(in srgb,var(--onhead) 40%,transparent);background:transparent;color:var(--onhead);border-radius:999px;padding:6px 9px;font-size:13px}
 .tab.on{background:var(--onhead);color:var(--head);border-color:var(--onhead)}
+.tab.next{position:relative}
+.tab.next::after{content:'';position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#e8b04a;box-shadow:0 0 0 2px var(--head)}
+.pen{width:36px;height:36px;border:0;background:transparent;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;margin:-6px -8px 0 0;border-radius:10px;flex:0 0 auto}
+.pen:active{background:var(--line)}
+.sheet{will-change:transform}
 main{max-width:620px;margin:0 auto;padding:14px 12px 140px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
 .ex-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
@@ -73,6 +78,13 @@ input[type=checkbox]:checked{background:var(--acc);border-color:var(--acc)}
 input[type=checkbox]:checked::after{opacity:1}
 .check input[type=checkbox]{width:26px;height:26px;border-radius:9px}
 .drops-row{display:flex;gap:10px;flex-wrap:wrap}
+.pills{display:flex;gap:7px;flex-wrap:wrap;margin:2px 0 12px 70px}
+.pill{height:36px;padding:0 14px;border:1.5px solid var(--drop);border-radius:18px;background:transparent;color:var(--drop);font:600 13px/1 inherit;font-family:inherit;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:background .12s,color .12s}
+.pill.sp{border-color:var(--ss);color:var(--ss)}
+.pill.on{background:var(--drop);color:#fff}
+.pill.sp.on{background:var(--ss);color:#fff}
+.pill:active{transform:scale(.96)}
+.ov-m{font-size:12px;letter-spacing:.5px}
 .drop-item{flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--drop);font-size:14px;min-width:120px}
 .drop-item .ss-check{margin:0}
 .ss-check{width:30px;height:30px;accent-color:var(--acc);margin:0 4px 0 auto;flex:0 0 auto}
@@ -223,7 +235,7 @@ const plan=id=>{for(const st of S.studios)for(const pr of st.programs){const p=p
 function ensureCur(){S.studios.forEach(s=>{if(!s.pool)s.pool=[]});let st=studio();if(!st||st.archived){st=live(S.studios)[0];S.settings.cur.studio=st.id}
   let pr=program();if(!pr||pr.archived){pr=live(st.programs)[0];if(!pr){pr={id:uid(),name:'Neues Programm',plans:[{id:uid(),name:'Plan A',color:'wein',exercises:[]}]};st.programs.push(pr)}S.settings.cur.program=pr.id}
   if(!live(pr.plans).length)pr.plans.push({id:uid(),name:'Plan A',color:'wein',exercises:[]});syncPool()}
-function copyOf(ex){return{id:uid(),name:(ex.name||'').trim(),note:ex.note||'',sets:ex.sets||3,drops:ex.drops||0,cat:ex.cat||'',img:ex.img||null,ss:ex.ss?{name:ex.ss.name,img:ex.ss.img||null}:null}}
+function copyOf(ex){return{from:ex.from||ex.id,id:uid(),name:(ex.name||'').trim(),note:ex.note||'',sets:ex.sets||3,drops:ex.drops||0,cat:ex.cat||'',img:ex.img||null,ss:ex.ss?{name:ex.ss.name,img:ex.ss.img||null}:null}}
 function syncPool(){for(const st of live(S.studios)){st.pool=st.pool||[];const have=new Set(st.pool.map(e=>norm(e.name)));
   for(const pr of live(st.programs))for(const pl of live(pr.plans))for(const ex of live(pl.exercises)){const n=norm(ex.name);if(!n||have.has(n))continue;have.add(n);st.pool.push(copyOf(ex))}}}
 function inPlans(ex){const n=norm(ex.name);if(!n)return[];return plans().map((q,i)=>live(q.exercises).some(e=>norm(e.name)===n)?LET[i]:null).filter(Boolean)}
@@ -236,7 +248,7 @@ function moveEx(ex,dest){for(const st of S.studios){for(const pr of st.programs)
   delete ex.archived;if(dest==='pool')studio().pool.push(ex);else plan(dest).exercises.push(ex)}
 function doneArr(d,n){return Array.from({length:n},(_,i)=>d===true||(Array.isArray(d)&&!!d[i]))}
 function lastSessions(ids,n){const out=[];const ss=sortedSessions();for(let i=ss.length-1;i>=0&&out.length<n;i--){const s=ss[i];
-  for(const id of ids){const e=s.data[id];if(e&&(hasVals(e.s)||doneArr(e.dropDone,3).some(Boolean)||e.ssDone)){out.push({date:s.date,e,start:s.planId==='start'});break}}}return out}
+  for(const id of ids){const e=s.data[id];if(e&&(hasVals(e.s)||doneArr(e.dropDone,3).some(Boolean)||e.ssDone||psAny(e.ps))){out.push({date:s.date,e,start:s.planId==='start'});break}}}return out}
 function poolMatch(ex,q){q=norm(q);if(!q)return true;return [ex.name,ex.note,ex.cat,ex.ss&&ex.ss.name].some(s=>norm(s).includes(q))}
 function renderPool(){let el=document.getElementById('pool');if(!view.pool){el&&el.remove();return}
   const keep=el&&el.querySelector('.sheet')?el.querySelector('.sheet').scrollTop:0;
@@ -266,18 +278,24 @@ function renderPoolList(){const box=document.getElementById('poolList');if(!box)
 function renderExSheet(){let el=document.getElementById('exSheet');const ex=view.exSheet&&findEx(view.exSheet);if(!ex){el&&el.remove();return}
   if(!el){el=document.createElement('div');el.id='exSheet';el.className='sheet-bg';el.style.zIndex=37;el.dataset.act='closeEx';document.body.appendChild(el)}
   const st=studio();const inPool=st.pool.includes(ex);const pl=plans();
-  el.innerHTML=`<div class="sheet ex-sheet" role="dialog" aria-label="Übung bearbeiten"><div class="grab"></div><h2>${view.exNew?'Neue Übung':'Übung bearbeiten'}</h2>
+  const pp=inPool?null:pl.find(q=>q.exercises.includes(ex));
+  el.innerHTML=`<div class="sheet ${inPool?'ex-sheet':''}" role="dialog" aria-label="Übung bearbeiten"><div class="grab"></div><h2>${view.exNew?'Neue Übung':'Übung bearbeiten'}</h2>
     <div class="ex-head" style="margin-top:12px">${photoHtml(ex.img,'photo',ex.id,true)}
     <div style="flex:1"><label class="field" style="margin-top:0"><span>Name der Übung</span><input class="text" id="exName" data-e="name" data-ex="${ex.id}" value="${esc(ex.name)}" placeholder="z.B. Beinpresse"></label></div></div>
     <label class="field"><span>Kategorie</span><select class="text" data-e="cat" data-ex="${ex.id}"><option value="">Ohne Kategorie</option>${cats().map(c=>`<option ${ex.cat===c?'selected':''}>${esc(c)}</option>`).join('')}</select></label>
     <label class="field"><span>Notiz</span><textarea data-note="${ex.id}" style="margin-top:0" placeholder="Sitzhöhe, Griff, Gefühl …">${esc(ex.note||'')}</textarea></label>
     <div class="row2"><label class="field"><span>Sätze</span>${selectHtml(`data-e="sets" data-ex="${ex.id}"`,ex.sets,[1,2,3,4,5,6])}</label>
-    <label class="field"><span>Dropsätze</span>${selectHtml(`data-e="drops" data-ex="${ex.id}"`,ex.drops,[0,1,2,3])}</label></div>
+    <label class="field"><span>Drops pro Satz</span>${selectHtml(`data-e="drops" data-ex="${ex.id}"`,ex.drops,[0,1,2,3])}</label></div>
     <label class="check"><input type="checkbox" data-e="ssOn" data-ex="${ex.id}" ${ex.ss?'checked':''}> Supersatz mit anderer Übung</label>
     ${ex.ss?`<label class="field" style="margin-top:0"><span>Supersatz-Übung</span><input class="text" data-e="ssName" data-ex="${ex.id}" value="${esc(ex.ss.name)}" placeholder="Liegestütze"></label>`:''}
     ${inPool?`${(u=>u.length?`<p class="also" style="margin:12px 2px 0">Steht in Plan ${u.join(', ')}.</p>`:'')(inPlans(ex))}<label class="field"><span>Zu Plan hinzufügen</span><select class="text" data-e="addTo" data-ex="${ex.id}"><option value="">Plan wählen …</option>
       ${pl.filter(q=>!live(q.exercises).some(e=>norm(e.name)===norm(ex.name))).map(q=>`<option value="${q.id}">Plan ${LET[pl.indexOf(q)]}: ${esc(q.name)}</option>`).join('')}</select></label>`:''}
-    <button class="btn fill wide pool-done" style="margin-top:14px;height:46px" data-act="closeEx">Fertig</button>
+    ${pp?`<label class="field"><span>Auch in anderen Plan aufnehmen</span><select class="text" data-e="copyTo" data-ex="${ex.id}"><option value="">Plan wählen …</option>
+      ${pl.filter(q=>q!==pp&&!live(q.exercises).some(e=>norm(e.name)===norm(ex.name))).map(q=>`<option value="${q.id}">Plan ${LET[pl.indexOf(q)]}: ${esc(q.name)}</option>`).join('')}</select></label>
+      <label class="field"><span>Verschieben nach</span><select class="text" data-e="move" data-ex="${ex.id}"><option value="">Plan wählen …</option>
+      ${pl.filter(q=>q!==pp).map(q=>`<option value="${q.id}">Plan ${LET[pl.indexOf(q)]}: ${esc(q.name)}</option>`).join('')}</select></label>`:''}
+    <button class="btn fill wide ${inPool?'pool-done':''}" style="margin-top:14px;height:46px" data-act="closeEx">Fertig</button>
+    ${pp?`<button class="btn danger wide" style="margin-top:10px" data-act="remove" data-ex="${ex.id}">Aus diesem Plan entfernen</button>`:''}
     ${inPool&&!view.exNew?`<button class="btn danger wide" style="margin-top:10px" data-act="delPool" data-v="${ex.id}">Übung ganz löschen</button>`:''}</div>`}
 function closeExSheet(){const ex=view.exSheet&&findEx(view.exSheet);const st=studio();
   if(ex&&!ex.name.trim()){const i=st.pool.indexOf(ex);if(view.exNew&&i>=0&&!ex.img&&!ex.note){st.pool.splice(i,1)}else ex.name='Neue Übung'}
@@ -301,6 +319,12 @@ function sessionKey(pid){return todayStr()+'|'+pid}
 function getEntry(pid,exId,create){const k=sessionKey(pid);
   if(!S.sessions[k]){if(!create)return null;S.sessions[k]={date:todayStr(),planId:pid,data:{}}}
   const d=S.sessions[k].data;if(!d[exId]){if(!create)return null;d[exId]={s:[],d:[],ss:[]}}return d[exId]}
+function rotation(){const pl=plans(),pr=program();if(!pr.rotation&&pl.length===6)return [0,3,1,4,2,5].map(i=>pl[i].id);
+  const r=(pr.rotation||[]).filter(id=>pl.some(p=>p.id===id));return r.concat(pl.map(p=>p.id).filter(id=>!r.includes(id)))}
+function trained(s){return Object.values(s.data||{}).some(e=>hasVals(e.s)||psAny(e.ps)||e.ssDone||(e.dropDone||[]).some(Boolean))}
+function nextPlanId(){const r=rotation();if(!r.length)return null;const ss=sortedSessions();
+  for(let i=ss.length-1;i>=0;i--){const s=ss[i];if(!r.includes(s.planId)||!trained(s))continue;if(s.date===todayStr())return s.planId;return r[(r.indexOf(s.planId)+1)%r.length]}
+  return r[0]}
 function sortedSessions(){return Object.values(S.sessions).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0)}
 function hasVals(arr){return arr&&arr.some(x=>x&&(x[0]!=null||x[1]!=null))}
 function lastEntry(ids){const t=todayStr();const ss=sortedSessions();
@@ -318,29 +342,35 @@ window.addEventListener('resize',fitTitle);
 const GEAR='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
 const STACK='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 4.5-9 4.5-9-4.5z"/><path d="M3 12l9 4.5 9-4.5"/><path d="M3 16.5l9 4.5 9-4.5"/></svg>';
 const GRIP='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>';
+const PEN='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
 const CHEV='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 
-function renderTop(){const top=document.getElementById('top');let title,sub='';const pl=plans();
+function renderTop(){const top=document.getElementById('top');let title,sub='';const pl=plans();const nx=nextPlanId();
   if(view.tab==='progress'){title='Fortschritt';applyTheme('auswertung')}
   else if(view.tab==='settings'){title='Einstellungen';applyTheme(pl[0].color)}
-  else{const p=plan(view.tab);title=p.name;applyTheme(p.color);sub=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}
+  else{const p=plan(view.tab);title=p.name;applyTheme(p.color);sub=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:p.id===nx?'short':'long'})+(p.id===nx?' · heute dran':'')}
   const isPlan=!['progress','settings'].includes(view.tab);
   top.innerHTML=`<div class="top-row"><div style="flex:1;min-width:0"><button class="ctx" data-act="sheet">${esc(studio().name)}, ${esc(program().name)} ${CHEV}</button><h1>${esc(title)}</h1>${sub?`<div class="date">${esc(sub)}</div>`:''}</div>
     ${isPlan?`<button class="icon-btn ${view.edit?'on':''}" data-act="toggleEdit">${view.edit?'Fertig':'Bearbeiten'}</button>`:''}
     <button class="icon-btn" data-act="openPool" aria-label="Sammlung">${STACK}</button>
     <button class="icon-btn ${view.tab==='settings'?'on':''}" data-act="tab" data-v="settings" aria-label="Einstellungen">${GEAR}</button></div>
-    <nav class="tabs">${pl.map((p,i)=>`<button class="tab ${view.tab===p.id?'on':''}" data-act="tab" data-v="${p.id}">${pl.length>4?LET[i]:'Plan '+LET[i]}</button>`).join('')}
+    <nav class="tabs">${pl.map((p,i)=>`<button class="tab ${view.tab===p.id?'on':''} ${p.id===nx?'next':''}" data-act="tab" data-v="${p.id}" ${p.id===nx?'aria-label="Als Nächstes dran"':''}>${pl.length>4?LET[i]:'Plan '+LET[i]}</button>`).join('')}
     <button class="tab ${view.tab==='progress'?'on':''}" data-act="tab" data-v="progress">Fortschritt</button></nav>`;
   fitTitle()}
 
 function photoHtml(imgId,act,exId,editable){const src=imgId&&IMG[imgId];
   return `<button class="photo" data-act="${act}" data-ex="${exId}" aria-label="Foto">${src?`<img src="${src}" alt="">`:(view.edit||editable?'Foto<br>aufnehmen':'kein<br>Foto')}</button>`}
 
+function pillLabel(ex){const n=(ex.ss&&ex.ss.name||'').trim();return n&&n.length<=16?n:'Supersatz'}
+function psOf(e,s){return e&&e.ps&&e.ps[s]||null}
+function psAny(ps){return Array.isArray(ps)&&ps.some(o=>o&&(o.s||(o.d||[]).some(Boolean)))}
+function pillRow(ex,s,cur){if(!ex.drops&&!ex.ss)return '';const o=psOf(cur,s)||{};const d=o.d||[];
+  return `<div class="pills">${Array.from({length:ex.drops},(_,k)=>`<button class="pill ${d[k]?'on':''}" data-act="pill" data-ex="${ex.id}" data-s="${s}" data-k="${k}" aria-pressed="${!!d[k]}">Drop</button>`).join('')}${ex.ss?`<button class="pill sp ${o.s?'on':''}" data-act="pill" data-ex="${ex.id}" data-s="${s}" data-k="s" aria-pressed="${!!o.s}">${esc(pillLabel(ex))}</button>`:''}</div>`}
 function setRows(ex,part,count,last,cur,label,cls){let h='';
   for(let i=0;i<count;i++){const l=last&&last[part]&&last[part][i]||[];const c=cur&&cur[part]&&cur[part][i]||[];
     h+=`<div class="grid ${cls}"><span class="lab">${label} ${i+1}</span>
     <input class="num ${c[0]!=null&&l[0]!=null&&c[0]>l[0]?'better':''}" inputmode="decimal" data-ex="${ex.id}" data-p="${part}" data-i="${i}" data-f="0" value="${fmtNum(c[0])}" placeholder="${fmtNum(l[0])}" aria-label="${label} ${i+1} Gewicht">
-    <input class="num" inputmode="numeric" data-ex="${ex.id}" data-p="${part}" data-i="${i}" data-f="1" value="${fmtNum(c[1])}" placeholder="${fmtNum(l[1])}" aria-label="${label} ${i+1} Wiederholungen"></div>`}
+    <input class="num" inputmode="numeric" data-ex="${ex.id}" data-p="${part}" data-i="${i}" data-f="1" value="${fmtNum(c[1])}" placeholder="${fmtNum(l[1])}" aria-label="${label} ${i+1} Wiederholungen"></div>`+(part==='s'?pillRow(ex,i,cur):'')}
   return h}
 
 function renderPlan(){const p=plan(view.tab);const list=live(p.exercises);const main=document.getElementById('main');
@@ -348,15 +378,10 @@ function renderPlan(){const p=plan(view.tab);const list=live(p.exercises);const 
   if(!list.length){main.innerHTML=`<div class="empty"><h2>Dieser Plan ist noch leer</h2><p>Leg deine Übungen an, sobald du weißt, welche Geräte es in den Plan schaffen.</p><button class="btn fill" style="flex:none;padding:0 22px" data-act="toggleEdit">Übungen anlegen</button></div>`;return}
   main.innerHTML=list.map(ex=>{const ids=groupIds(ex.id);const last=lastEntry(ids);const cur=getEntry(p.id,ex.id,false);const rec=record(ids);
     let h=`<section class="card"><div class="ex-head">${photoHtml(ex.img,'zoom',ex.id)}
-      <div style="flex:1;min-width:0"><div class="ex-name">${esc(ex.name)}</div>${ex.note?`<div class="ex-note">${esc(ex.note)}</div>`:''}${ex.cat?`<span class="cat-tag">${esc(ex.cat)}</span>`:''}
-      ${rec!=null?`<div class="record">Rekord ${fmtNum(rec)} kg</div>`:''}</div></div>
+      <div style="flex:1;min-width:0"><div class="ex-name">${ex.name?esc(ex.name):'<span style="opacity:.55">Ohne Namen, unter Bearbeiten benennen</span>'}</div><div class="ex-note" data-noteview="${ex.id}" ${ex.note?'':'hidden'}>${esc(ex.note||'')}</div>${ex.cat?`<span class="cat-tag">${esc(ex.cat)}</span>`:''}
+      ${rec!=null?`<div class="record">Rekord ${fmtNum(rec)} kg</div>`:''}</div><button class="pen" data-act="editEx" data-v="${ex.id}" aria-label="Übung bearbeiten">${PEN}</button></div>
       <div class="grid colhead"><span></span><span>kg</span><span>Wdh</span></div>
       ${setRows(ex,'s',ex.sets,last,cur,'Satz','')}`;
-    if(ex.drops){const dd=cur&&cur.dropDone;const isDone=i=>dd===true||(Array.isArray(dd)&&!!dd[i]);
-      h+=`<div class="ss"><div class="drops-row">${Array.from({length:ex.drops},(_,i)=>`<label class="drop-item"><span>Dropsatz ${i+1}</span>
-      <input type="checkbox" class="ss-check" data-dropdone="${ex.id}" data-i="${i}" ${isDone(i)?'checked':''}></label>`).join('')}</div></div>`}
-    if(ex.ss){const done=!!(cur&&cur.ssDone);h+=`<div class="ss"><div class="ss-title">${photoHtml(ex.ss.img,'zoomss',ex.id)}<span>Supersatz: ${esc(ex.ss.name)}</span>
-      <input type="checkbox" class="ss-check" data-ssdone="${ex.id}" ${done?'checked':''} aria-label="Supersatz erledigt"></div></div>`}
     h+=`<div class="ex-foot"><button class="btn fill" data-act="timer">Pause ${fmtTime(S.settings.pause)}</button>
       <button class="btn" data-act="note" data-ex="${ex.id}">Notiz</button></div>
       <div data-notebox="${ex.id}" hidden><textarea data-note="${ex.id}" placeholder="Sitzhöhe, Griff, Gefühl …">${esc(ex.note||'')}</textarea></div></section>`;
@@ -368,13 +393,13 @@ function renderEdit(p){const list=live(p.exercises);const main=document.getEleme
   main.innerHTML=list.map((ex,i)=>{const also=alsoIn(ex,p);return `<section class="card" data-drag="plan" data-id="${ex.id}"><div class="ex-head">${photoHtml(ex.img,'photo',ex.id)}
     <div style="flex:1;min-width:0"><label class="field" style="margin-top:0"><span>Name der Übung</span><input class="text" data-e="name" data-ex="${ex.id}" value="${esc(ex.name)}"></label>
     ${also.length?`<div class="also">Auch in Plan ${also.join(', ')}. Verlauf wird zusammengeführt.</div>`:''}</div><span class="grip" aria-hidden="true">${GRIP}</span></div>
+    <label class="field"><span>Notiz (steht unter dem Namen)</span><textarea data-note="${ex.id}" style="margin-top:0;min-height:64px" placeholder="Sitz 3, Lehne 2, Griff …">${esc(ex.note||'')}</textarea></label>
     <div class="row2"><label class="field"><span>Sätze</span>${selectHtml(`data-e="sets" data-ex="${ex.id}"`,ex.sets,[1,2,3,4,5,6])}</label>
-    <label class="field"><span>Dropsätze</span>${selectHtml(`data-e="drops" data-ex="${ex.id}"`,ex.drops,[0,1,2,3])}</label></div>
+    <label class="field"><span>Drops pro Satz</span>${selectHtml(`data-e="drops" data-ex="${ex.id}"`,ex.drops,[0,1,2,3])}</label></div>
     <label class="field"><span>Kategorie</span><select class="text" data-e="cat" data-ex="${ex.id}"><option value="">Ohne Kategorie</option>${cats().map(c=>`<option ${ex.cat===c?'selected':''}>${esc(c)}</option>`).join('')}</select></label>
     <label class="check"><input type="checkbox" data-e="ssOn" data-ex="${ex.id}" ${ex.ss?'checked':''}> Supersatz mit anderer Übung</label>
-    ${ex.ss?`<div class="ss" style="margin-top:0"><div class="ex-head">${photoHtml(ex.ss.img,'photoss',ex.id)}
-      <div style="flex:1"><label class="field" style="margin-top:0"><span>Supersatz-Übung</span><input class="text" data-e="ssName" data-ex="${ex.id}" value="${esc(ex.ss.name)}" placeholder="Liegestütze"></label></div></div>
-      <p class="muted" style="margin:0">Ein Satz, wird im Training nur abgehakt.</p></div>`:''}
+    ${ex.ss?`<label class="field" style="margin-top:0"><span>Supersatz-Übung (optional)</span><input class="text" data-e="ssName" data-ex="${ex.id}" value="${esc(ex.ss.name)}" placeholder="Liegestütze"></label>
+      <p class="muted" style="margin:4px 0 0">Nach jedem Satz ein Knopf zum Abhaken. Kurze Namen stehen direkt auf dem Knopf.</p>`:''}
     <label class="field"><span>Auch in anderen Plan aufnehmen</span><select class="text" data-e="copyTo" data-ex="${ex.id}"><option value="">Plan wählen …</option>
       ${plans().filter(q=>q.id!==p.id).map(q=>`<option value="${q.id}">Plan ${LET[plans().indexOf(q)]}: ${esc(q.name)}</option>`).join('')}</select></label>
     <label class="field"><span>Verschieben nach</span><select class="text" data-e="move" data-ex="${ex.id}"><option value="">Plan wählen …</option>
@@ -408,9 +433,12 @@ function renderOverview(){const main=document.getElementById('main');const pl=pl
     if(!L.length){h+=`<p class="muted" style="margin:8px 0 0">Noch keine Einträge.</p></details>`;continue}
     const cols=L.length;const g=`grid-template-columns:52px repeat(${cols},1fr)`;
     h+=`<div class="ov-r hd" style="${g}"><span></span>${L.map((x,k)=>`<span class="${k===0?'c1':''}">${x.start?'Start':fmtDate(x.date).slice(0,5)}</span>`).join('')}</div>`;
-    for(let s=0;s<ex.sets;s++)h+=`<div class="ov-r" style="${g}"><span>Satz ${s+1}</span>${L.map((x,k)=>`<span class="${k===0?'c1':''}">${cell(x.e.s&&x.e.s[s])}</span>`).join('')}</div>`;
-    if(ex.drops)h+=`<div class="ov-r" style="${g};color:${col.drop}"><span>Drops</span>${L.map((x,k)=>{const a=doneArr(x.e.dropDone,ex.drops);return `<span class="${k===0?'c1':''}">${a.map(v=>v?'✓':'–').join(' ')}</span>`}).join('')}</div>`;
-    if(ex.ss)h+=`<div class="ov-r" style="${g};color:${col.ss}"><span>Super</span>${L.map((x,k)=>`<span class="${k===0?'c1':''}">${x.e.ssDone?'✓':'–'}</span>`).join('')}</div>`;
+    const anyPs=L.some(x=>psAny(x.e.ps));
+    for(let s=0;s<ex.sets;s++){h+=`<div class="ov-r" style="${g}"><span>Satz ${s+1}</span>${L.map((x,k)=>`<span class="${k===0?'c1':''}">${cell(x.e.s&&x.e.s[s])}</span>`).join('')}</div>`;
+      if(anyPs&&(ex.drops||ex.ss))h+=`<div class="ov-r ov-m" style="${g};border-top:0;padding-top:0;color:${col.drop}"><span></span>${L.map((x,k)=>{const o=psOf(x.e,s);if(!o)return `<span class="${k===0?'c1':''}">–</span>`;
+        const d=Array.from({length:ex.drops},(_,j)=>o.d&&o.d[j]?'✓':'–').join('');return `<span class="${k===0?'c1':''}">${ex.drops?'D '+d:''}${ex.ss?`${ex.drops?' · ':''}<span style="color:${col.ss}">S ${o.s?'✓':'–'}</span>`:''}</span>`}).join('')}</div>`}
+    if(!anyPs&&ex.drops)h+=`<div class="ov-r" style="${g};color:${col.drop}"><span>Drops</span>${L.map((x,k)=>{const a=doneArr(x.e.dropDone,ex.drops);return `<span class="${k===0?'c1':''}">${a.map(v=>v?'✓':'–').join(' ')}</span>`}).join('')}</div>`;
+    if(!anyPs&&ex.ss)h+=`<div class="ov-r" style="${g};color:${col.ss}"><span>Super</span>${L.map((x,k)=>`<span class="${k===0?'c1':''}">${x.e.ssDone?'✓':'–'}</span>`).join('')}</div>`;
     h+=`</details>`}
   main.innerHTML=h}
 function chartSvg(data,color){const W=340,H=170,pl=36,pr=12,pt=14,pb=26;
@@ -449,6 +477,8 @@ function renderSettings(){const main=document.getElementById('main');const st=st
       <div style="display:flex;align-items:center;gap:10px;margin:-2px 0 8px"><div style="flex:1;height:6px;border-radius:3px;background:${(PRESETS[p.color]||PRESETS.wein).head}"></div>
       ${live(pr.plans).length>1?`<button class="btn ghost" style="height:32px;font-size:13px" data-act="delPlan" data-p="${p.id}">Plan entfernen</button>`:''}</div>`).join('')}
     <button class="btn wide" data-act="addPlan">Plan hinzufügen</button>
+    <label class="field"><span>Trainingsreihenfolge</span><input class="text" data-s="rot" value="${rotation().map(id=>LET[live(pr.plans).findIndex(p=>p.id===id)]).join(' ')}" autocapitalize="characters" placeholder="A D B E C F"></label>
+    <p class="muted" style="margin:6px 2px 4px">Nach einem Trainingstag öffnet die App beim nächsten Mal automatisch den nächsten Plan in dieser Reihenfolge, egal wie viele Tage dazwischen liegen. Als Nächstes dran: Plan ${LET[live(pr.plans).findIndex(p=>p.id===nextPlanId())]}.</p>
     ${others.length?`<div class="lbl">In ein anderes Studio kopieren</div><div style="display:flex;gap:8px"><select class="text" id="copyTarget">${others.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select><button class="btn" data-act="copyProg">Kopieren</button></div>`:''}
     <div style="height:10px"></div><button class="btn danger wide" data-act="delProg">Programm entfernen</button></section>
     <h2 class="section-title">Studios</h2><section class="card">${live(S.studios).map(s=>`<div style="display:flex;gap:8px;align-items:end"><label class="field" style="flex:1;margin-top:0"><span>${s===st?'Aktuelles Studio':'Studio'}</span><input class="text" data-s="stname" data-v="${s.id}" value="${esc(s.name)}"></label>
@@ -476,7 +506,7 @@ function renderSheet(){let el=document.getElementById('sheet');if(!view.sheetStu
     <div style="display:grid;grid-template-columns:1fr 110px;gap:8px"><input class="text" id="newProgName" placeholder="z. B. Ganzkörper"><select class="text" id="newProgCount">${[1,2,3,4,5,6].map(n=>`<option value="${n}">${n} ${n===1?'Plan':'Pläne'}</option>`).join('')}</select></div>
     <div style="height:8px"></div><button class="btn fill wide" data-act="newProg">Programm anlegen</button></div>`}
 
-function render(){ensureCur();if(!['progress','settings'].includes(view.tab)&&!plans().find(p=>p.id===view.tab))view.tab=plans()[0].id;
+function render(){ensureCur();view.day=todayStr();if(!['progress','settings'].includes(view.tab)&&!plans().find(p=>p.id===view.tab))view.tab=nextPlanId()||plans()[0].id;
   renderTop();if(view.tab==='progress')renderProgress();else if(view.tab==='settings')renderSettings();else renderPlan();renderSheet();renderPool();renderExSheet()}
 
 function fmtTime(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
@@ -536,7 +566,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
   else if(a==='up'||a==='down'){const arr=p.exercises;const act=live(arr);const i=act.findIndex(x=>x.id===exId);const j=a==='up'?i-1:i+1;if(j<0||j>=act.length)return;
     const ia=arr.indexOf(act[i]),ib=arr.indexOf(act[j]);[arr[ia],arr[ib]]=[arr[ib],arr[ia]];saveData();render()}
   else if(a==='remove'){const ex=findEx(exId);if(!confirm(`„${ex.name||'Übung'}“ aus diesem Plan nehmen? Sie bleibt in der Sammlung, der Verlauf bleibt erhalten.`))return;
-    dropFromPlan(ex);saveData();render()}
+    dropFromPlan(ex);if(view.exSheet===ex.id){view.exSheet=null;view.exNew=false}saveData();render()}
   else if(a==='progMode'){view.progMode=v;renderProgress()}
   else if(a==='progFilter'){view.progFilter=v;renderProgress()}
   else if(a==='poolCat'){view.poolCat=v;renderPool()}
@@ -544,11 +574,14 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
   else if(a==='addCat'){const n=(prompt('Name der neuen Kategorie')||'').trim();if(!n||cats().includes(n))return;cats().push(n);saveData();render()}
   else if(a==='delCat'){const c=cats()[+v];if(!confirm(`Kategorie „${c}“ entfernen? Die Übungen bleiben erhalten, nur ohne Kategorie.`))return;cats().splice(+v,1);allEx().forEach(x=>{if(x.ex.cat===c)x.ex.cat=''});saveData();render()}
   else if(a==='newPool'){const ex={id:uid(),name:'',note:'',sets:3,drops:0,ss:null,img:null,cat:(view.poolCat&&view.poolCat!=='all'?view.poolCat:'')};st.pool.unshift(ex);view.exSheet=ex.id;view.exNew=true;saveData();renderExSheet();setTimeout(()=>{const n=document.getElementById('exName');n&&n.focus()},60)}
+  else if(a==='pill'){const en=getEntry(view.tab,exId,true);en.ps=en.ps||[];const s=+b.dataset.s;const o=en.ps[s]=en.ps[s]||{d:[],s:false};
+    if(b.dataset.k==='s')o.s=!o.s;else{o.d=o.d||[];o.d[+b.dataset.k]=!o.d[+b.dataset.k]}const on=b.dataset.k==='s'?o.s:o.d[+b.dataset.k];
+    b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}saveData()}
   else if(a==='editEx'){view.exSheet=v;view.exNew=false;renderExSheet()}
   else if(a==='closeEx'){closeExSheet()}
   else if(a==='openPool'){view.pool=true;renderPool()}
   else if(a==='closePool'){view.pool=false;view.poolQ='';renderPool();render()}
-  else if(a==='takePool'){const ex=st.pool.find(x=>x.id===v);if(!ex)return;if(live(p.exercises).some(e=>norm(e.name)===norm(ex.name))){toast('Schon in diesem Plan');return}
+  else if(a==='takePool'){const ex=st.pool.find(x=>x.id===v);if(!ex)return;if(!ex.name.trim()){toast('Bitte der Übung zuerst einen Namen geben');return}if(live(p.exercises).some(e=>norm(e.name)===norm(ex.name))){toast('Schon in diesem Plan');return}
     p.exercises.push(copyOf(ex));saveData();renderPool();toast(`„${ex.name}“ hinzugefügt`)}
   else if(a==='delPool'){const ex=st.pool.find(x=>x.id===v);if(!ex)return;const u=inPlans(ex);
     if(!confirm(`„${ex.name}“ löschen?${u.length?` Sie wird auch aus Plan ${u.join(', ')} entfernt.`:''} Der Verlauf bleibt im Fortschritt.`))return;
@@ -585,7 +618,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
 document.addEventListener('input',e=>{const t=e.target;
   if(t.classList.contains('num')){const v=parseNum(t.value);const en=getEntry(view.tab,t.dataset.ex,true);const arr=en[t.dataset.p];const i=+t.dataset.i;arr[i]=arr[i]||[null,null];arr[i][+t.dataset.f]=v;
     if(t.dataset.f==='0'){const ph=parseNum(t.placeholder);t.classList.toggle('better',v!=null&&ph!=null&&v>ph)}saveData()}
-  else if(t.dataset.note){for(const id of groupIds(t.dataset.note)){const x=findEx(id);if(x)x.note=t.value}saveData()}
+  else if(t.dataset.note){for(const id of groupIds(t.dataset.note)){const x=findEx(id);if(x)x.note=t.value;document.querySelectorAll(`[data-noteview="${id}"]`).forEach(v=>{v.textContent=t.value;v.hidden=!t.value.trim()})}saveData()}
   else if(t.id==='poolQ'){view.poolQ=t.value;renderPoolList()}
   else if(t.dataset.e==='name'){for(const id of (t._grp||[t.dataset.ex])){const x=findEx(id);if(x)x.name=t.value}saveData()}
   else if(t.dataset.e==='ssName'){findEx(t.dataset.ex).ss.name=t.value;saveData()}
@@ -593,13 +626,15 @@ document.addEventListener('input',e=>{const t=e.target;
   else if(t.dataset.s==='prname'){program().name=t.value;saveData()}
   else if(t.dataset.s==='stname'){S.studios.find(s=>s.id===t.dataset.v).name=t.value;saveData()}});
 
-document.addEventListener('focusin',e=>{const t=e.target;if(t.dataset&&t.dataset.e==='name'){const ex=findEx(t.dataset.ex);t._grp=ex&&norm(ex.name)?groupIds(ex.id):[t.dataset.ex]}});
+document.addEventListener('focusin',e=>{const t=e.target;if(t.dataset&&t.dataset.e==='name'){const ex=findEx(t.dataset.ex);const root=ex&&(ex.from||ex.id);const kin=allEx().filter(x=>x.ex.id===root||x.ex.from===root).map(x=>x.ex.id);t._grp=[...new Set([...(ex&&norm(ex.name)?groupIds(ex.id):[t.dataset.ex]),...kin])]}});
 
 document.addEventListener('change',async e=>{const t=e.target;
+  if(t.dataset.s==='rot'){const pl=plans();const ids=[...new Set((t.value.toUpperCase().match(/[A-F]/g)||[]).map(c=>pl[LET.indexOf(c)]).filter(Boolean).map(p=>p.id))];
+    if(!ids.length){toast('Bitte Buchstaben wie A D B E C F eingeben');render();return}program().rotation=ids;saveData();render();toast('Reihenfolge gespeichert');return}
   if(t.dataset.e){const ex=findEx(t.dataset.ex);const k=t.dataset.e;
     if(k==='sets')ex.sets=+t.value;else if(k==='drops')ex.drops=+t.value;
     else if(k==='cat'){for(const id of groupIds(ex.id)){const x=findEx(id);if(x)x.cat=t.value}saveData();return}
-    else if(k==='addTo'){if(!t.value)return;const dest=plan(t.value);dest.exercises.push(copyOf(ex));saveData();renderExSheet();renderPool();toast(`Zu Plan ${LET[plans().indexOf(dest)]} hinzugefügt`);return}
+    else if(k==='addTo'){if(!t.value)return;if(!ex.name.trim()){t.value='';toast('Bitte zuerst einen Namen eingeben');document.getElementById('exName')&&document.getElementById('exName').focus();return}const dest=plan(t.value);dest.exercises.push(copyOf(ex));saveData();renderExSheet();renderPool();toast(`Zu Plan ${LET[plans().indexOf(dest)]} hinzugefügt`);return}
     else if(k==='copyTo'){if(!t.value)return;const dest=plan(t.value);if(live(dest.exercises).some(e=>norm(e.name)===norm(ex.name))){toast('Steht dort schon');t.value='';return}dest.exercises.push(copyOf(ex));
       saveData();render();toast(`Auch in Plan ${LET[plans().indexOf(dest)]} aufgenommen`);return}
     else if(k==='move'){if(!t.value)return;const dest=t.value;moveEx(ex,dest);if(view.exSheet===ex.id){view.exSheet=null;view.exNew=false}saveData();render();toast(dest==='pool'?'In die Sammlung verschoben':'Verschoben nach Plan '+LET[plans().indexOf(plan(dest))]);return}
@@ -613,6 +648,15 @@ document.addEventListener('change',async e=>{const t=e.target;
   else if(t.dataset.dropdone){const en=getEntry(view.tab,t.dataset.dropdone,true);if(!Array.isArray(en.dropDone))en.dropDone=[];en.dropDone[+t.dataset.i]=t.checked;saveData()}
   else if(t.dataset.ssdone){getEntry(view.tab,t.dataset.ssdone,true).ssDone=t.checked;saveData()}});
 
+let SW=null;
+document.addEventListener('touchstart',e=>{const sh=e.target.closest&&e.target.closest('.sheet');if(!sh||e.touches.length!==1||sh.scrollTop>0){SW=null;return}SW={sh,y:e.touches[0].clientY,dy:0,t:Date.now(),on:false}},{passive:true});
+document.addEventListener('touchmove',e=>{if(!SW||(DR&&DR.on))return;const dy=e.touches[0].clientY-SW.y;
+  if(!SW.on){if(dy>10&&SW.sh.scrollTop<=0){SW.on=true;if(DR){clearTimeout(DR.t);DR=null}SW.sh.style.transition='none'}else if(dy<-4){SW=null;return}else return}
+  if(e.cancelable)e.preventDefault();SW.dy=Math.max(0,dy);SW.sh.style.transform=`translateY(${SW.dy}px)`},{passive:false});
+function swipeEnd(){if(!SW)return;const s=SW;SW=null;if(!s.on)return;const v=s.dy/Math.max(1,Date.now()-s.t);s.sh.style.transition='transform .18s ease-out';
+  if(s.dy>110||(s.dy>45&&v>.5)){s.sh.style.transform='translateY(100%)';noClickUntil=0;setTimeout(()=>{const bg=s.sh.parentElement;if(bg&&bg.isConnected)bg.click()},170)}
+  else{s.sh.style.transform='';setTimeout(()=>{s.sh.style.transition=''},200)}}
+document.addEventListener('touchend',swipeEnd);document.addEventListener('touchcancel',swipeEnd);
 let DR=null,noClickUntil=0;
 function scrollBox(el){const s=el.closest('.sheet');return s||document.scrollingElement}
 function dragStart(x,y,target){if(DR)return;const el=target.closest&&target.closest('[data-drag]');if(!el)return;
@@ -644,7 +688,7 @@ document.addEventListener('mousemove',e=>dragMove(e.clientX,e.clientY,e));docume
 document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('[data-drag]'))e.preventDefault()});
 document.addEventListener('click',e=>{if(Date.now()<noClickUntil){e.stopPropagation();e.preventDefault()}},true);
 
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveNow()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveNow();else if(view.day&&view.day!==todayStr()){if(!['progress','settings'].includes(view.tab)){view.tab=null;view.edit=false}render();scrollTo(0,0)}});
 window.addEventListener('pagehide',()=>saveNow());
 
 (async function init(){await store.open();
