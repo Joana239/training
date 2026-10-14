@@ -175,6 +175,106 @@ body.dragging-plan main .card .field span{display:none}
 .ex-sheet .text,.ex-sheet textarea,.ex-sheet select.text{border-color:#d3dccc}
 .also{font-size:12px;color:var(--muted);margin-top:6px}
 .pool-add{height:40px;padding:0 12px;border-color:#6f7f68!important;color:#6f7f68!important}
+:root{--gold:#c8892a}
+.seg.five button{padding:9px 2px;font-size:13px}
+.delta{font-size:13px;font-weight:700;margin-left:6px;color:var(--muted)}
+.delta.up{color:var(--acc)}
+.bars{margin-top:4px}
+.brow{display:flex;align-items:flex-end;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.brow:first-child{border-top:0}
+.bdate{width:62px;flex:0 0 auto;font-size:12px;line-height:1.35;color:var(--muted);padding-bottom:26px}
+.bdate b{display:block;font-size:13px;color:var(--ink)}
+.bset{flex:1;display:flex;gap:8px;align-items:flex-end;min-width:0}
+.bcol{flex:1;max-width:58px;text-align:center;min-width:0}
+.bbar{border-radius:7px 7px 3px 3px}
+.bbar.rec{background:var(--gold)}
+.bnum{font-size:14px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.bkg{font-size:11px;color:var(--muted);white-space:nowrap}
+.bmk{display:flex;gap:3px;justify-content:center;height:8px;margin-top:3px}
+.bmk i,.legend i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.bmk i.s,.legend i.s{border-radius:2px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{margin-right:5px;vertical-align:middle;width:8px;height:8px}
+.mnav{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
+.mnav b{font-size:18px;font-weight:700}
+.mnav button{width:42px;height:42px;border:1px solid var(--line);background:var(--card);border-radius:12px;color:var(--ink);font-size:20px;line-height:1}
+.mnav button:disabled{opacity:.35}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .wd{font-size:11px;color:var(--muted);text-align:center}
+.cal .d{aspect-ratio:1;border-radius:9px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--soft)}
+.cal .d.on{color:#fdf9f4;font-weight:700}
+.cal .d.today{box-shadow:inset 0 0 0 2px var(--ink)}
+.cal .d.fut{background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:#b9a89c}
+.rl{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.card>.rl:first-child,.card>.muted+.rl{border-top:0}
+.rl.col{flex-direction:column;gap:2px}
+.yh{display:grid;grid-template-columns:28px repeat(31,1fr);gap:2px;align-items:center}
+.yh span{font-size:10px;color:var(--muted)}
+.rc .yh span{color:inherit;opacity:.7}
+.yh i{aspect-ratio:1;border-radius:2px}
+.phm{display:flex;gap:12px;align-items:center}
+.ph-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.ph-t{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;padding:0;font-size:11px;color:var(--muted);font-weight:600}
+.ph-t .im{width:100%;aspect-ratio:3/4;border-radius:8px;background:var(--line);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted)}
+.ph-t .im img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-t .im.add{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
+.ph-t:disabled{opacity:.35}
+.cmp{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:var(--line);touch-action:pan-y}
+.cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cmp img.a{clip-path:inset(0 50% 0 0)}
+.cmp .ln{position:absolute;top:0;bottom:0;left:50%;width:2px;margin-left:-1px;background:#fdf9f4}
+.cmp .tg{position:absolute;top:8px;font-size:12px;font-weight:600;background:rgba(253,249,244,.92);color:#280d08;padding:2px 9px;border-radius:999px}
+.range{width:100%;accent-color:var(--acc);margin:12px 0 2px}
+.ph-lb{z-index:50}
+.ph-box{background:var(--bg);color:var(--ink);border-radius:18px;padding:12px;max-width:420px;width:100%;max-height:100%;display:flex;flex-direction:column;gap:10px}
+.ph-box img{width:100%;max-height:62vh;object-fit:contain;border-radius:12px;min-height:0}
+.ph-cap{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:15px}
+.ph-act{display:flex;gap:8px}.ph-act .btn{flex:1;padding:0 8px}
+.recap{position:fixed;inset:0;z-index:45;background:rgba(40,13,8,.55);display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 18px) 14px calc(env(safe-area-inset-bottom,0px) + 18px)}
+.rc{position:relative;width:100%;max-width:420px;height:min(640px,100%);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;background:#f3f6f0;color:#586357}
+.recap.full{padding:0;background:#4a0f1f}
+.recap.full .rc{max-width:none;height:100%;border-radius:0;background:#4a0f1f;color:#fdf9f4;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+.rc-x{position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border-radius:50%;border:0;background:rgba(40,13,8,.32);color:#fdf9f4;font-size:22px;line-height:1}
+.recap.full .rc-x{top:calc(env(safe-area-inset-top,0px) + 10px)}
+.rc-track{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain}
+.rc-track::-webkit-scrollbar{display:none}
+.rc-card{flex:0 0 100%;min-width:0;scroll-snap-align:start;scroll-snap-stop:always;overflow-y:auto;padding:30px 24px 20px;display:flex;flex-direction:column}
+.recap.full .rc-card{max-width:620px;margin:0 auto;flex-basis:100%}
+.rc-card.g{background:#586357;color:#f3f6f0;--rcA:#f3f6f0;--rcB:#586357}
+.rc-card.l{background:#f3f6f0;color:#2f382d;--rcA:#586357;--rcB:#f3f6f0}
+.rc-card.d{background:#4a0f1f;color:#fdf9f4;--rcA:#fdf9f4;--rcB:#4a0f1f}
+.rc-card.w{background:#7b2638;color:#fdf9f4;--rcA:#fdf9f4;--rcB:#7b2638}
+.rc-card.b{background:#fdf9f4;color:#280d08;--rcA:#7b2638;--rcB:#fdf9f4}
+.rc-k{font-size:15px;font-weight:600;opacity:.8}
+.rc-big{font-size:64px;font-weight:700;line-height:1;margin:14px 0 6px;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.rc-big.xl{font-size:88px}
+.rc-l{font-size:18px;font-weight:600;line-height:1.3}
+.rc-h{font-size:26px;font-weight:700;line-height:1.15;margin:8px 0 4px}
+.rc-h.big{font-size:34px;margin-top:12px}
+.rc-sub{font-size:14px;opacity:.75;margin-top:22px}
+.rc-p{font-size:14px;opacity:.85;margin:6px 0 0}
+.rc-p.lg{font-size:18px;line-height:1.5;opacity:.95;margin-top:16px}
+.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 14px;margin-top:28px}
+.rc-grid b{display:block;font-size:24px;font-weight:700;line-height:1.1}
+.rc-grid small{display:block;font-size:13px;opacity:.8;margin-top:4px;line-height:1.35}
+.rc-ft{display:flex;align-items:center;gap:14px;margin-top:14px}
+.rc-ft small{display:block;font-size:12px;opacity:.75}
+.rc-ft b{font-size:18px}
+.rc-ft span{font-size:22px;opacity:.7}
+.rc-list{margin-top:16px}
+.rc-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid color-mix(in srgb,currentColor 18%,transparent);font-size:15px}
+.rc-box{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px;border-radius:14px;background:color-mix(in srgb,currentColor 7%,transparent)}
+.rc-ph{width:48px;height:64px;border-radius:8px;object-fit:cover}
+.rc-foot{margin-top:auto;padding-top:22px;display:flex;flex-direction:column;gap:8px}
+.rc-btn{height:46px;border-radius:12px;border:1.5px solid currentColor;background:transparent;color:inherit;font-weight:600;font-size:15px;padding:0 14px}
+.rc-btn.fill{background:var(--rcA);color:var(--rcB);border-color:var(--rcA)}
+.rc-btn.sm{height:38px;font-size:14px;flex:0 0 auto}
+.rc .cmp .tg{background:rgba(253,249,244,.92)}
+.rc .cal{gap:4px}.rc .cal .d{aspect-ratio:1.3;border-radius:7px}
+.rc-dots{display:flex;gap:6px;justify-content:center;padding:12px 0 14px}
+.rc-dots i{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.25;transition:opacity .2s}
+.rc-dots i.on{opacity:.9}
+@media (prefers-reduced-motion:reduce){.rc-dots i{transition:none}}
 </style>
 </head>
 <body>
@@ -188,6 +288,7 @@ body.dragging-plan main .card .field span{display:none}
 <div class="toast" id="toast"></div>
 <input type="file" id="photoIn" accept="image/*" hidden>
 <input type="file" id="importIn" accept="application/json,.json" hidden>
+<input type="file" id="bodyIn" accept="image/*" hidden>
 <script>
 const PRESETS={
   wein:{name:'Weinrot',head:'#4a0f1f',acc:'#7b2638',drop:'#7b2638',ss:'#4a0f1f',soft:'#7a4a50'},
@@ -308,7 +409,7 @@ function groupIds(exId){const all=allEx();const me=all.find(x=>x.ex.id===exId);i
   return all.filter(x=>x.st.id===me.st.id&&norm(x.ex.name)===norm(me.ex.name)).map(x=>x.ex.id)}
 
 let saveT=null;
-function saveData(){clearTimeout(saveT);saveT=setTimeout(saveNow,300)}
+function saveData(){AN=null;clearTimeout(saveT);saveT=setTimeout(saveNow,300)}
 function saveNow(){clearTimeout(saveT);return Promise.all([store.set('studios',S.studios),store.set('settings',S.settings),store.set('sessions',S.sessions)])}
 
 function applyTheme(color){const c=PRESETS[color]||PRESETS.wein;const r=document.documentElement.style;
@@ -414,8 +515,10 @@ function progressItems(){const groups={};for(const x of allEx()){const n=norm(x.
   if(!groups[k])groups[k]={key:k,st:x.st,name:x.ex.name.trim(),ids:[],color:x.pl?x.pl.color:'wein',active:false};groups[k].ids.push(x.ex.id);if(!x.arch)groups[k].active=true}
   return Object.values(groups).map(g=>(g.n=series(g.ids).length,g)).filter(g=>g.active||g.n)}
 
-function renderProgress(){const mode=view.progMode||'overview';if(mode==='single')renderSingle();else renderOverview();
-  const seg=`<div class="seg"><button class="${mode==='overview'?'on':''}" data-act="progMode" data-v="overview">Übersicht</button><button class="${mode==='single'?'on':''}" data-act="progMode" data-v="single">Einzelne Übung</button></div>`;
+function renderProgress(){analyze();const mode=view.progMode||'overview';
+  ({overview:renderOverview,single:renderSingle,month:renderMonth,year:renderYear,photos:renderPhotos}[mode]||renderOverview)();
+  const L=[['overview','Übersicht'],['single','Übung'],['month','Monat'],['year','Jahr'],['photos','Fotos']];
+  const seg=`<div class="seg five">${L.map(([k,t])=>`<button class="${mode===k?'on':''}" data-act="progMode" data-v="${k}">${t}</button>`).join('')}</div>`;
   document.getElementById('main').insertAdjacentHTML('afterbegin',seg)}
 function cell(x){if(!x||(x[0]==null&&x[1]==null))return '<span class="n">–</span>';return `${x[0]!=null?fmtNum(x[0]):'–'}${x[1]!=null?' × '+fmtNum(x[1]):''}`}
 function renderOverview(){const main=document.getElementById('main');const pl=plans();const f=view.progFilter||'all';
@@ -441,13 +544,13 @@ function renderOverview(){const main=document.getElementById('main');const pl=pl
     if(!anyPs&&ex.ss)h+=`<div class="ov-r" style="${g};color:${col.ss}"><span>Super</span>${L.map((x,k)=>`<span class="${k===0?'c1':''}">${x.e.ssDone?'✓':'–'}</span>`).join('')}</div>`;
     h+=`</details>`}
   main.innerHTML=h}
-function chartSvg(data,color){const W=340,H=170,pl=36,pr=12,pt=14,pb=26;
+function chartSvg(data,color,int){const W=340,H=170,pl=36,pr=12,pt=14,pb=26;
   if(data.length<2)return `<p class="muted" style="margin:14px 0">Ab dem zweiten Training siehst du hier deine Kurve.</p>`;
   const vs=data.map(d=>d.v);let mn=Math.min(...vs),mx=Math.max(...vs);if(mn===mx){mn-=1;mx+=1}const pad=(mx-mn)*.12;mn-=pad;mx+=pad;
   const x=i=>pl+(W-pl-pr)*i/(data.length-1),y=v=>pt+(H-pt-pb)*(1-(v-mn)/(mx-mn));
   const ticks=[mn+(mx-mn)*.1,(mn+mx)/2,mx-(mx-mn)*.1];
-  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gewichtsverlauf">`;
-  ticks.forEach(t=>{s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}" stroke="#e6d9c9" stroke-width="1"/><text x="${pl-6}" y="${y(t)+4}" font-size="11" text-anchor="end" fill="#8c7a70">${fmtNum(Math.round(t*2)/2)}</text>`});
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${int?'Wiederholungsverlauf':'Gewichtsverlauf'}">`;
+  ticks.forEach(t=>{s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}" stroke="#e6d9c9" stroke-width="1"/><text x="${pl-6}" y="${y(t)+4}" font-size="11" text-anchor="end" fill="#8c7a70">${fmtNum(int?Math.round(t):Math.round(t*2)/2)}</text>`});
   s+=`<polyline fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${data.map((d,i)=>x(i)+','+y(d.v)).join(' ')}"/>`;
   data.forEach((d,i)=>{if(data.length<=20||i===data.length-1)s+=`<circle cx="${x(i)}" cy="${y(d.v)}" r="${i===data.length-1?4.5:3}" fill="${color}"/>`});
   s+=`<text x="${pl}" y="${H-6}" font-size="11" fill="#8c7a70">${fmtDate(data[0].date)}</text><text x="${W-pr}" y="${H-6}" font-size="11" text-anchor="end" fill="#8c7a70">${fmtDate(data[data.length-1].date)}</text></svg>`;
@@ -461,11 +564,17 @@ function renderSingle(){const main=document.getElementById('main');const items=p
   let opts='';for(const st of S.studios){const g=items.filter(i=>i.st===st);if(g.length)opts+=`<optgroup label="${esc(st.name)}">${g.map(i=>`<option value="${esc(i.key)}" ${i.key===view.progKey?'selected':''}>${esc(i.name)}</option>`).join('')}</optgroup>`}
   let h=`<p class="muted" style="margin:2px 2px 10px">Trainings insgesamt: ${total}</p><section class="card">
     <select class="text" data-act="progSel" aria-label="Übung wählen">${opts}</select><div class="muted" style="margin-top:6px">${esc(it.st.name)}</div>`;
-  if(data.length){const first=data[0].v,lastv=data[data.length-1].v,best=Math.max(...data.map(d=>d.v));const pct=first?Math.round((lastv-first)/first*100):0;
-    h+=`<div class="stats"><div class="stat"><small>Start</small><b>${fmtNum(first)} kg</b></div><div class="stat"><small>Aktuell</small><b>${fmtNum(lastv)} kg</b></div>
-    <div class="stat"><small>Veränderung</small><b style="color:${c.acc}">${pct>0?'+':''}${pct} %</b></div><div class="stat"><small>Rekord</small><b>${fmtNum(best)} kg</b></div></div>
-    <div class="muted">Schwerster Arbeitssatz pro Training</div>${chartSvg(data,c.acc)}
-    <table class="hist">${data.slice(-8).reverse().map(d=>`<tr><td>${fmtDate(d.date)}</td><td>${fmtNum(d.v)} kg</td></tr>`).join('')}</table>`}
+  if(data.length){const first=data[0].v,lastv=data[data.length-1].v;const pct=first?Math.round((lastv-first)/first*100):0;
+    const A=AN||analyze();const L3=lastSessionsK(it.ids,3);const rs=repsSeries(it.ids);const lastR=rs.length?rs[rs.length-1].v:null,prevR=rs.length>1?rs[rs.length-2].v:null;
+    const kgs=L3.length?(L3[0].e.s||[]).filter(x=>x&&x[0]!=null).map(x=>x[0]):[];const lastKg=kgs.length?Math.max(...kgs):null;
+    const hh=A.hist[it.key];const recAt=hh&&lastKg!=null?hh.by[lastKg]:null;const tr=view.trend||'reps';const repBy=Object.fromEntries(rs.map(x=>[x.date,x.v]));
+    h+=`<div class="stats"><div class="stat"><small>Wdh. letztes Training</small><b>${lastR!=null?fmtNum(lastR):'–'}</b>${lastR!=null&&prevR!=null?delta(lastR,prevR):''}</div>
+    <div class="stat"><small>${lastKg!=null?'Rekord bei '+fmtNum(lastKg)+' kg':'Rekord'}</small><b>${recAt!=null?fmtNum(recAt)+' Wdh.':'–'}</b></div>
+    <div class="stat"><small>Aktuell</small><b>${fmtNum(lastv)} kg</b></div><div class="stat"><small>Seit Start</small><b style="color:${c.acc}">${pct>0?'+':''}${pct} %</b></div></div>
+    ${barsHtml(L3,c)}
+    <div class="chips" style="margin:16px 0 4px"><button class="chip ${tr==='reps'?'on':''}" data-act="trend" data-v="reps">Wiederholungen</button><button class="chip ${tr==='kg'?'on':''}" data-act="trend" data-v="kg">Gewicht</button></div>
+    <div class="muted">${tr==='reps'?'Wiederholungen aller Sätze pro Training':'Schwerster Arbeitssatz pro Training'}</div>${tr==='reps'?chartSvg(rs.slice(-20),c.acc,true):chartSvg(data,c.acc)}
+    <table class="hist">${data.slice(-8).reverse().map(d=>`<tr><td>${fmtDate(d.date)}</td><td>${fmtNum(d.v)} kg</td><td>${repBy[d.date]!=null?fmtNum(repBy[d.date])+' Wdh.':''}</td></tr>`).join('')}</table>`}
   else h+=`<p class="muted" style="margin-top:14px">Für diese Übung gibt es noch keine Einträge.</p>`;
   main.innerHTML=h+`</section>`}
 
@@ -506,6 +615,210 @@ function renderSheet(){let el=document.getElementById('sheet');if(!view.sheetStu
     <div style="display:grid;grid-template-columns:1fr 110px;gap:8px"><input class="text" id="newProgName" placeholder="z. B. Ganzkörper"><select class="text" id="newProgCount">${[1,2,3,4,5,6].map(n=>`<option value="${n}">${n} ${n===1?'Plan':'Pläne'}</option>`).join('')}</select></div>
     <div style="height:8px"></div><button class="btn fill wide" data-act="newProg">Programm anlegen</button></div>`}
 
+
+/* ===== Auswertung: Übungsbalken, Monat, Jahr, Recaps, Fotos ===== */
+const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const MSHORT=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+const WDAY=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const isoD=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const pDate=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const curYm=()=>todayStr().slice(0,7);
+const shiftYm=(k,n)=>{let[y,m]=k.split('-').map(Number);m+=n;while(m<1){m+=12;y--}while(m>12){m-=12;y++}return y+'-'+String(m).padStart(2,'0')};
+const ymName=k=>MONTHS[+k.slice(5,7)-1];
+const mRange=k=>[k+'-01',k+'-31'];
+const yRange=y=>[y+'-01-01',y+'-12-31'];
+const weekOf=s=>{const d=pDate(s);d.setDate(d.getDate()-(d.getDay()+6)%7);return isoD(d)};
+const fmtVol=v=>v>=1000?fmtNum(Math.round(v/100)/10)+' t':fmtNum(Math.round(v))+' kg';
+const fmtSet=x=>fmtNum(x.kg)+' kg × '+fmtNum(x.reps);
+const signed=n=>(n>0?'+':n<0?'−':'±')+fmtNum(Math.abs(n));
+const e1rm=(kg,r)=>kg*(1+r/30);
+const planColor=pid=>{const p=plan(pid);return (PRESETS[p&&p.color]||PRESETS.wein).head};
+const photos=()=>S.settings.photos=S.settings.photos||{};
+const photoOf=k=>{const id=photos()[k];return id&&IMG[id]?IMG[id]:null};
+function planStudio(pid){for(const st of S.studios)for(const pr of st.programs)if(pr.plans.some(p=>p.id===pid))return st;return null}
+function delta(n,p){if(p==null)return '';const d=n-p;return `<span class="delta ${d>0?'up':d<0?'dn':''}">${signed(d)}</span>`}
+
+let AN=null;
+function analyze(){
+  const gk={},gname={};
+  for(const x of allEx()){const n=norm(x.ex.name);if(!n)continue;const k=x.st.id+'|'+n;gk[x.ex.id]=k;if(!gname[k]||!x.arch)gname[k]=x.ex.name.trim()}
+  const hist={},byGroup={},marks={},out=[];
+  const keys=Object.keys(S.sessions).sort((a,b)=>{const A=S.sessions[a],B=S.sessions[b];if(A.date!==B.date)return A.date<B.date?-1:1;return (A.planId==='start'?0:1)-(B.planId==='start'?0:1)});
+  for(const sk of keys){const s=S.sessions[sk];const start=s.planId==='start';const real=!start&&Object.values(s.data||{}).some(e=>hasVals(e.s));
+    const row={key:sk,date:s.date,planId:s.planId,reps:0,vol:0,recs:[]};const upd=[];
+    for(const[id,e]of Object.entries(s.data||{})){
+      if(real)for(const x of e.s||[])if(x&&x[1]!=null){row.reps+=x[1];if(x[0]!=null)row.vol+=x[0]*x[1]}
+      const sets=(e.s||[]).map((x,i)=>x&&x[0]!=null&&x[1]!=null?{kg:x[0],reps:x[1],i}:null).filter(Boolean);
+      const k=gk[id];if(!k||!sets.length)continue;
+      const best=sets.reduce((a,b)=>e1rm(b.kg,b.reps)>e1rm(a.kg,a.reps)?b:a);
+      (byGroup[k]=byGroup[k]||[]).push({date:s.date,start,kg:best.kg,reps:best.reps,e1:e1rm(best.kg,best.reps)});
+      const h=hist[k];
+      if(real&&h){const idx=[];let top=null;
+        for(const x of sets)if(x.kg>h.max||(h.by[x.kg]!=null&&x.reps>h.by[x.kg])){idx.push(x.i);if(!top||x.kg>top.kg||(x.kg===top.kg&&x.reps>top.reps))top=x}
+        if(idx.length){marks[sk+'|'+id]=idx;if(!row.recs.some(r=>r.k===k))row.recs.push({k,name:gname[k],kg:top.kg,reps:top.reps,date:s.date})}}
+      upd.push([k,sets])}
+    for(const[k,sets]of upd){const h=hist[k]=hist[k]||{max:-Infinity,by:{}};for(const x of sets){if(x.kg>h.max)h.max=x.kg;if(h.by[x.kg]==null||x.reps>h.by[x.kg])h.by[x.kg]=x.reps}}
+    if(real)out.push(row)}
+  AN={sessions:out,marks,hist,byGroup,gname};return AN}
+function stats(from,to){const ss=(AN||analyze()).sessions.filter(s=>s.date>=from&&s.date<=to);
+  return {ss,n:ss.length,days:[...new Set(ss.map(s=>s.date))],reps:ss.reduce((t,s)=>t+s.reps,0),vol:ss.reduce((t,s)=>t+s.vol,0),recs:ss.flatMap(s=>s.recs)}}
+function curStreak(upTo){const w=new Set((AN||analyze()).sessions.filter(s=>s.date<=upTo).map(s=>weekOf(s.date)));
+  const d=pDate(weekOf(upTo));if(!w.has(isoD(d)))d.setDate(d.getDate()-7);let n=0;while(w.has(isoD(d))){n++;d.setDate(d.getDate()-7)}return n}
+function bestStreak(from,to){const ws=[...new Set((AN||analyze()).sessions.filter(s=>s.date>=from&&s.date<=to).map(s=>weekOf(s.date)))].sort();let b=0,r=0,p=null;
+  for(const w of ws){r=p&&Math.round((pDate(w)-pDate(p))/864e5)===7?r+1:1;b=Math.max(b,r);p=w}return b}
+function progressIn(from,to,useBefore){const A=AN||analyze();const res=[];
+  for(const[k,list]of Object.entries(A.byGroup)){const inR=list.filter(x=>!x.start&&x.date>=from&&x.date<=to);if(!inR.length)continue;
+    let base=useBefore?[...list].reverse().find(x=>x.date<from):null;if(!base){if(inR.length<2)continue;base=inR[0]}
+    const last=inR[inR.length-1];const g=base.e1?(last.e1-base.e1)/base.e1:0;if(g<=0)continue;res.push({k,name:A.gname[k],base,last,g})}
+  return res.sort((a,b)=>b.g-a.g)}
+function recCount(recs){const c={};for(const r of recs){c[r.k]=c[r.k]||{name:r.name,n:0};c[r.k].n++}return Object.values(c).sort((a,b)=>b.n-a.n)}
+function dayColors(from,to){const m={};for(const s of (AN||analyze()).sessions)if(s.date>=from&&s.date<=to&&!m[s.date])m[s.date]=planColor(s.planId);return m}
+const wochen=n=>n===1?'1 Woche':n+' Wochen';
+const malTxt=n=>n===1?'einmal':n+'-mal';
+
+function calHtml(k){const[y,m]=k.split('-').map(Number);const n=new Date(y,m,0).getDate();const off=(new Date(y,m-1,1).getDay()+6)%7;
+  const col=dayColors(...mRange(k));const t=todayStr();
+  let h=`<div class="cal" role="img" aria-label="${Object.keys(col).length} Trainingstage im ${ymName(k)}">`+['Mo','Di','Mi','Do','Fr','Sa','So'].map(d=>`<span class="wd">${d}</span>`).join('');
+  for(let i=0;i<off;i++)h+='<span></span>';
+  for(let d=1;d<=n;d++){const ds=k+'-'+String(d).padStart(2,'0');const c=col[ds];
+    h+=`<span class="d${c?' on':''}${ds===t?' today':''}${ds>t?' fut':''}"${c?` style="background:${c}"`:''}>${d}</span>`}
+  return h+'</div>'}
+function yearHeat(y,dark){const col=dayColors(...yRange(y));const t=todayStr();let h=`<div class="yh" role="img" aria-label="${Object.keys(col).length} Trainingstage in ${y}">`;
+  for(let m=0;m<12;m++){h+=`<span>${MSHORT[m]}</span>`;const n=new Date(y,m+1,0).getDate();
+    for(let d=1;d<=31;d++){if(d>n){h+='<i style="visibility:hidden"></i>';continue}
+      const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');const c=col[ds];
+      h+=`<i style="background:${c?(dark?'#fdf9f4':c):dark?'rgba(253,249,244,.16)':ds>t?'transparent':'var(--line)'}${!c&&!dark&&ds>t?';box-shadow:inset 0 0 0 1px var(--line)':''}"></i>`}}
+  return h+'</div>'}
+function monthBars(y,color){const cnt=Array(12).fill(0);for(const s of (AN||analyze()).sessions)if(s.date.startsWith(y+'-'))cnt[+s.date.slice(5,7)-1]++;
+  const mx=Math.max(1,...cnt),W=340,H=132,bw=18,gap=(W-12*bw)/12;
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Trainings pro Monat">`;
+  cnt.forEach((c,i)=>{const x=gap/2+i*(bw+gap),h=c?Math.max(4,c/mx*84):2,yy=106-h;
+    s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${h}" rx="4" fill="${c?color:'#e6d9c9'}"/>`;
+    if(c)s+=`<text x="${x+bw/2}" y="${yy-5}" font-size="11" font-weight="600" text-anchor="middle" fill="#280d08">${c}</text>`;
+    s+=`<text x="${x+bw/2}" y="${H-6}" font-size="11" text-anchor="middle" fill="#8c7a70">${MSHORT[i].slice(0,1)}</text>`});
+  return s+'</svg>'}
+
+/* --- Einzelne Übung: Satz-Balken --- */
+function lastSessionsK(ids,n){const out=[];const keys=Object.keys(S.sessions).sort((a,b)=>{const A=S.sessions[a].date,B=S.sessions[b].date;return A<B?-1:A>B?1:0});
+  for(let i=keys.length-1;i>=0&&out.length<n;i--){const s=S.sessions[keys[i]];for(const id of ids){const e=s.data[id];if(e&&hasVals(e.s)){out.push({key:keys[i],id,date:s.date,e,start:s.planId==='start'});break}}}return out}
+function repsSeries(ids){const by={};for(const s of Object.values(S.sessions)){if(s.planId==='start')continue;for(const id of ids){const e=s.data[id];if(!e)continue;let r=0,has=false;for(const x of e.s||[])if(x&&x[1]!=null){r+=x[1];has=true}if(has)by[s.date]=(by[s.date]||0)+r}}
+  return Object.keys(by).sort().map(d=>({date:d,v:by[d]}))}
+function barsHtml(L,c){const A=AN||analyze();
+  const rows=L.map(x=>({x,sets:(x.e.s||[]).map((s,i)=>s&&s[1]!=null?{kg:s[0],r:s[1],i}:null).filter(Boolean)})).filter(r=>r.sets.length);
+  if(!rows.length)return '';
+  const mx=Math.max(1,...rows.flatMap(r=>r.sets.map(s=>s.r)));let anyRec=false,anyD=false,anyS=false;
+  const h=rows.map(({x,sets})=>{const kgs=[...new Set(sets.map(s=>s.kg))];const same=kgs.length===1;const mk=A.marks[x.key+'|'+x.id]||[];
+    return `<div class="brow"><div class="bdate"><b>${x.start?'Start':fmtDate(x.date).slice(0,5)}</b>${same&&kgs[0]!=null?fmtNum(kgs[0])+' kg':''}</div><div class="bset">${sets.map(s=>{
+      const rec=mk.includes(s.i);if(rec)anyRec=true;const o=psOf(x.e,s.i)||{};const nd=(o.d||[]).filter(Boolean).length;if(nd)anyD=true;if(o.s)anyS=true;
+      return `<div class="bcol"><div class="bbar${rec?' rec':''}" style="height:${Math.round(10+s.r/mx*72)}px${rec?'':';background:'+c.acc}"></div><div class="bnum">${fmtNum(s.r)}</div>${same?'':`<div class="bkg">${s.kg!=null?fmtNum(s.kg)+' kg':'–'}</div>`}<div class="bmk">${`<i style="background:${c.drop}"></i>`.repeat(nd)}${o.s?`<i class="s" style="background:${c.ss}"></i>`:''}</div></div>`}).join('')}</div></div>`}).join('');
+  const leg=[anyD&&`<span><i style="background:${c.drop}"></i>Drop</span>`,anyS&&`<span><i class="s" style="background:${c.ss}"></i>Supersatz</span>`,anyRec&&`<span><i style="background:var(--gold)"></i>Rekord</span>`].filter(Boolean);
+  return `<div class="muted" style="margin-top:14px">Wiederholungen pro Satz, letzte Trainings</div><div class="bars">${h}</div>${leg.length?`<div class="legend">${leg.join('')}</div>`:''}`}
+
+/* --- Monat --- */
+function renderMonth(){const main=document.getElementById('main');const c=curYm();const k=view.month&&view.month<=c?view.month:c;view.month=k;
+  const M=ymName(k),pk=shiftYm(k,-1);const S1=stats(...mRange(k));const dd=todayStr().slice(8);const S0=k===c?stats(pk+'-01',pk+'-'+dd):stats(...mRange(pk));const img=photoOf(k);
+  let h=`<div class="mnav"><button data-act="monthNav" data-v="-1" aria-label="Vorheriger Monat">‹</button><b>${M} ${k.slice(0,4)}</b><button data-act="monthNav" data-v="1" ${k>=c?'disabled':''} aria-label="Nächster Monat">›</button></div>
+    <section class="card">${calHtml(k)}</section>
+    <div class="stats"><div class="stat"><small>Trainings</small><b>${S1.n}</b>${delta(S1.n,S0.n)}</div><div class="stat"><small>Wiederholungen</small><b>${fmtNum(S1.reps)}</b>${delta(S1.reps,S0.reps)}</div>
+    <div class="stat"><small>Bewegt</small><b>${fmtVol(S1.vol)}</b></div><div class="stat"><small>Neue Rekorde</small><b>${S1.recs.length}</b></div></div>
+    <p class="muted" style="margin:-4px 2px 14px">Die kleinen Zahlen vergleichen mit ${k===c?`dem 1. bis ${+dd}. ${ymName(pk)}`:ymName(pk)}.${k===c?` Aktuelle Serie: ${wochen(curStreak(todayStr()))} am Stück.`:''}</p>`;
+  if(S1.recs.length)h+=`<h2 class="section-title">Rekorde im ${M}</h2><section class="card">${S1.recs.slice().reverse().slice(0,10).map(r=>`<div class="rl"><span>${esc(r.name)}</span><span><b>${fmtSet(r)}</b> <span class="muted">${fmtDate(r.date).slice(0,5)}</span></span></div>`).join('')}</section>`;
+  h+=`<section class="card"><div class="phm">${img?`<button class="ph-t" style="width:58px" data-act="photoView" data-v="${k}"><span class="im"><img src="${img}" alt="Foto ${M}"></span></button>`:''}
+    <div style="flex:1"><b>Foto für ${M}</b><div class="muted">${img?'Gespeichert. Antippen zum Ansehen.':'Noch kein Foto für diesen Monat.'}</div></div>${img?'':`<button class="btn" data-act="photoAdd" data-v="${k}">Hinzufügen</button>`}</div></section>`;
+  if(k<c&&S1.n)h+=`<button class="btn fill wide" style="height:48px" data-act="recap" data-k="month" data-v="${k}">Monats-Recap ansehen</button>`;
+  else if(k===c)h+=`<p class="muted" style="text-align:center">Dein Recap für ${M} kommt beim ersten Öffnen im ${ymName(shiftYm(k,1))}.</p>`;
+  main.innerHTML=h}
+
+/* --- Jahr --- */
+function yearFacts(y){const[f,t]=yRange(y);const Y=stats(f,t);const months=Array(12).fill(0);Y.ss.forEach(s=>months[+s.date.slice(5,7)-1]++);
+  const wd=Array(7).fill(0);Y.days.forEach(d=>wd[pDate(d).getDay()]++);const pc={},sc={};
+  Y.ss.forEach(s=>{pc[s.planId]=(pc[s.planId]||0)+1;const st=planStudio(s.planId);if(st)sc[st.name]=(sc[st.name]||0)+1});
+  const top=o=>Object.entries(o).sort((a,b)=>b[1]-a[1])[0];
+  return {Y,months,topM:months.indexOf(Math.max(...months)),topD:wd.indexOf(Math.max(...wd)),best:bestStreak(f,t),prog:progressIn(f,t,false),
+    rc:recCount(Y.recs),topPlan:top(pc),topStudio:Object.keys(sc).length>1?top(sc):null}}
+function renderYear(){const main=document.getElementById('main');const cy=+todayStr().slice(0,4);const y=view.year&&view.year<=cy?view.year:cy;view.year=y;
+  const F=yearFacts(y),Y=F.Y;const open=y<cy||todayStr()>=cy+'-12-15';const col=(PRESETS.wein).acc;
+  let h=`<div class="mnav"><button data-act="yearNav" data-v="-1" aria-label="Vorheriges Jahr">‹</button><b>${y}</b><button data-act="yearNav" data-v="1" ${y>=cy?'disabled':''} aria-label="Nächstes Jahr">›</button></div>`;
+  if(!Y.n){main.innerHTML=h+`<div class="empty"><h2>Noch keine Trainings in ${y}</h2><p>Sobald du trainierst, füllt sich hier dein Jahr.</p></div>`;return}
+  h+=`<div class="stats"><div class="stat"><small>Trainings</small><b>${Y.n}</b></div><div class="stat"><small>Wiederholungen</small><b>${fmtNum(Y.reps)}</b></div>
+    <div class="stat"><small>Bewegt</small><b>${fmtVol(Y.vol)}</b></div><div class="stat"><small>Neue Rekorde</small><b>${Y.recs.length}</b></div></div>
+    <section class="card">${yearHeat(y,false)}</section>
+    <section class="card"><div class="muted">Trainings pro Monat</div>${monthBars(y,col)}
+    <div class="rl"><span>Stärkster Monat</span><b>${MONTHS[F.topM]}, ${F.months[F.topM]} Trainings</b></div>
+    <div class="rl"><span>Lieblingstag</span><b>${WDAY[F.topD]}</b></div><div class="rl"><span>Längste Serie</span><b>${wochen(F.best)} am Stück</b></div></section>`;
+  if(F.prog.length)h+=`<h2 class="section-title">Wo du gestartet bist, wo du stehst</h2><section class="card">${F.prog.slice(0,6).map(p=>`<div class="rl col"><b>${esc(p.name)}</b><span><span class="muted">${MSHORT[+p.base.date.slice(5,7)-1]}</span> ${fmtSet(p.base)} <span class="muted">→ ${MSHORT[+p.last.date.slice(5,7)-1]}</span> ${fmtSet(p.last)} <span class="delta up">+${Math.round(p.g*100)} %</span></span></div>`).join('')}
+    <p class="muted" style="margin:8px 0 0">Verglichen wird dein bester Satz im ersten und im letzten Training des Jahres, Gewicht und Wiederholungen zusammen.</p></section>`;
+  h+=open?`<button class="btn fill wide" style="height:48px" data-act="recap" data-k="year" data-v="${y}">Jahres-Recap ${y} ansehen</button>`:`<p class="muted" style="text-align:center">Dein Jahres-Recap wird am 15. Dezember freigeschaltet.</p>`;
+  main.innerHTML=h}
+
+/* --- Fotos --- */
+function cmpHtml(a,b,sx){return `<div class="cmp"><img src="${photoOf(b)}" alt="Foto ${ymName(b)} ${b.slice(0,4)}"><img class="a" id="cmpA${sx}" src="${photoOf(a)}" alt="Foto ${ymName(a)} ${a.slice(0,4)}"><span class="ln" id="cmpL${sx}"></span>
+  <span class="tg" style="left:8px">${MSHORT[+a.slice(5)-1]} ${a.slice(2,4)}</span><span class="tg" style="right:8px">${MSHORT[+b.slice(5)-1]} ${b.slice(2,4)}</span></div>
+  <input type="range" class="range" min="0" max="100" value="50" data-cmp="${sx}" aria-label="Vergleich verschieben">`}
+function renderPhotos(){const main=document.getElementById('main');const ks=Object.keys(photos()).filter(k=>photoOf(k)).sort();const c=curYm();const cy=+c.slice(0,4);
+  const y=view.photoYear&&view.photoYear<=cy?view.photoYear:cy;view.photoYear=y;
+  let h=`<p class="muted" style="margin:2px 2px 12px">Ein Foto pro Monat. Die Fotos bleiben nur auf diesem Handy und sind in deinem Backup enthalten.</p>`;
+  if(ks.length>=2){const a=ks.includes(view.cmpA)?view.cmpA:ks[0],b=ks.includes(view.cmpB)?view.cmpB:ks[ks.length-1];
+    const opt=s=>ks.map(k=>`<option value="${k}" ${k===s?'selected':''}>${ymName(k)} ${k.slice(0,4)}</option>`).join('');
+    h+=`<section class="card"><div class="row2"><select class="text" data-cmpsel="A" aria-label="Linkes Foto">${opt(a)}</select><select class="text" data-cmpsel="B" aria-label="Rechtes Foto">${opt(b)}</select></div><div style="height:10px"></div>${cmpHtml(a,b,'')}</section>`}
+  else h+=`<section class="card"><p style="margin:0">${ks.length?'Ab dem zweiten Foto kannst du hier zwei Monate nebeneinander vergleichen.':'Leg dein erstes Foto an. Ab dem zweiten Monat kannst du hier vergleichen.'}</p></section>`;
+  h+=`<section class="card"><div class="mnav" style="margin:0 0 12px"><button data-act="photoYear" data-v="-1" aria-label="Vorheriges Jahr">‹</button><b>${y}</b><button data-act="photoYear" data-v="1" ${y>=cy?'disabled':''} aria-label="Nächstes Jahr">›</button></div><div class="ph-strip">`;
+  for(let m=0;m<12;m++){const k=y+'-'+String(m+1).padStart(2,'0');const img=photoOf(k);
+    h+=img?`<button class="ph-t" data-act="photoView" data-v="${k}"><span class="im"><img src="${img}" alt="Foto ${MONTHS[m]}"></span>${MSHORT[m]}</button>`
+      :`<button class="ph-t" data-act="photoAdd" data-v="${k}" ${k>c?'disabled':''} aria-label="Foto für ${MONTHS[m]} hinzufügen"><span class="im add">+</span>${MSHORT[m]}</button>`}
+  h+=`</div></section><p class="muted" style="text-align:center">Tipp: Gleicher Ort, ähnliches Licht und die gleiche Pose machen Veränderungen am besten sichtbar.</p>`;
+  main.innerHTML=h}
+function closeLb(){document.querySelectorAll('.ph-lb').forEach(x=>x.remove())}
+function showPhoto(k){closeLb();const img=photoOf(k);if(!img)return;const s=stats(...mRange(k));const el=document.createElement('div');el.className='lightbox ph-lb';
+  el.innerHTML=`<div class="ph-box" role="dialog" aria-label="Foto ${ymName(k)}"><img src="${img}" alt="Foto ${ymName(k)} ${k.slice(0,4)}"><div class="ph-cap"><b>${ymName(k)} ${k.slice(0,4)}</b><span class="muted">${s.n} ${s.n===1?'Training':'Trainings'}, ${s.recs.length} ${s.recs.length===1?'Rekord':'Rekorde'}</span></div>
+    <div class="ph-act"><button class="btn" data-act="photoAdd" data-v="${k}">Ersetzen</button><button class="btn danger" data-act="photoDel" data-v="${k}">Löschen</button><button class="btn fill" data-act="lbClose">Schließen</button></div></div>`;
+  el.addEventListener('click',e=>{if(e.target===el)el.remove()});document.body.appendChild(el)}
+let photoMonth=null;
+
+/* --- Recaps --- */
+function openRecap(type,key){analyze();view.recap={type,key:String(key)};renderRecap()}
+function renderRecap(){let el=document.getElementById('recap');if(!view.recap){el&&el.remove();document.body.style.overflow='';return}
+  const {type,key}=view.recap;const cards=type==='month'?monthCards(key):yearCards(+key);
+  const keep=el&&el.querySelector('.rc-track')?el.querySelector('.rc-track').scrollLeft:0;
+  if(!el){el=document.createElement('div');el.id='recap';document.body.appendChild(el)}
+  el.className='recap'+(type==='year'?' full':'');el.dataset.act='recapClose';
+  el.innerHTML=`<div class="rc ${type==='month'?'m':'y'}" role="dialog" aria-label="${type==='month'?'Monats-Recap '+ymName(key):'Jahres-Recap '+key}"><button class="rc-x" data-act="recapClose" aria-label="Schließen">×</button>
+    <div class="rc-track">${cards.map((c,i)=>`<section class="rc-card ${c.cls}">${c.html}<div class="rc-foot">${c.extra||''}${i<cards.length-1?'<button class="rc-btn" data-act="rcNext">Weiter</button>':'<button class="rc-btn fill" data-act="recapClose">Fertig</button>'}</div></section>`).join('')}</div>
+    <div class="rc-dots" aria-hidden="true">${cards.map((c,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div></div>`;
+  const tr=el.querySelector('.rc-track');tr.scrollLeft=keep;const dots=el.querySelectorAll('.rc-dots i');
+  const upd=()=>{const i=Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth));dots.forEach((d,j)=>d.classList.toggle('on',i===j))};
+  tr.addEventListener('scroll',upd,{passive:true});upd();document.body.style.overflow='hidden'}
+function monthCards(k){const M=ymName(k),pk=shiftYm(k,-1);const S1=stats(...mRange(k)),S0=stats(...mRange(pk));
+  const hi=progressIn(...mRange(k),true)[0];const rc=recCount(S1.recs);const img=photoOf(k);const end=k+'-31'<todayStr()?k+'-31':todayStr();const str=curStreak(end);
+  const lb=S.settings.lastBackup;
+  return [
+    {cls:'g',html:`<div class="rc-k">Dein ${M}</div><div class="rc-big">${S1.n}</div><div class="rc-l">${S1.n===1?'Training':'Trainings'}${S0.n?(S1.n===S0.n?`, so viele wie im ${ymName(pk)}`:`, ${signed(S1.n-S0.n)} zum ${ymName(pk)}`):''}</div>
+      <div class="rc-grid"><div><b>${fmtNum(S1.reps)}</b><small>Wiederholungen${S0.n?`<br>${signed(S1.reps-S0.reps)} zum Vormonat`:''}</small></div><div><b>${fmtVol(S1.vol)}</b><small>bewegt</small></div></div>`},
+    {cls:'l',html:`<div class="rc-k">Neue Rekorde</div><div class="rc-big">${S1.recs.length}</div>
+      ${hi?`<div class="rc-sub">Am meisten zugelegt</div><div class="rc-h">${esc(hi.name)}</div><div class="rc-ft"><div><small>vorher</small><b>${fmtSet(hi.base)}</b></div><span aria-hidden="true">→</span><div><small>jetzt</small><b>${fmtSet(hi.last)}</b></div></div>`:''}
+      ${rc.length?`<div class="rc-list">${rc.slice(0,4).map(r=>`<div class="rc-row"><span>${esc(r.name)}</span><b>${malTxt(r.n)}</b></div>`).join('')}</div>`:`<p class="rc-p">Diesen Monat ohne neuen Rekord. Dranbleiben zählt trotzdem.</p>`}`},
+    {cls:'l',html:`<div class="rc-k">Deine Trainingstage</div><div style="margin:14px 0 10px">${calHtml(k)}</div><div class="rc-l">${str?`Serie: ${wochen(str)} am Stück`:'Neuer Monat, neue Serie.'}</div>
+      <div class="rc-box">${img?`<img class="rc-ph" src="${img}" alt="Foto ${M}"><div><b>Foto für ${M}</b><div class="rc-p">ist gespeichert.</div></div>`:`<div style="flex:1"><b>Foto für ${M}</b><div class="rc-p">Halt fest, wo du gerade stehst.</div></div><button class="rc-btn sm" data-act="photoAdd" data-v="${k}">Hinzufügen</button>`}</div>
+      <div class="rc-box"><div style="flex:1"><b>Backup</b><div class="rc-p">${lb?`Zuletzt am ${fmtDate(lb)}.`:'Noch kein Backup gespeichert.'}</div></div><button class="rc-btn sm" data-act="export">Sichern</button></div>`,
+      extra:k.endsWith('-12')?`<button class="rc-btn" data-act="recap" data-k="year" data-v="${k.slice(0,4)}">Jahres-Recap ${k.slice(0,4)} ansehen</button>`:''}]}
+function yearCards(y){const F=yearFacts(y),Y=F.Y;const ele=Math.round(Y.vol/6000);const pk=Object.keys(photos()).filter(k=>k.startsWith(y+'-')&&photoOf(k)).sort();
+  const cards=[{cls:'d',html:`<div class="rc-k">Dein Jahr ${y}</div><div class="rc-big xl">${Y.n}</div><div class="rc-l">Trainings absolviert</div>
+    <div class="rc-grid"><div><b>${fmtNum(Y.reps)}</b><small>Wiederholungen</small></div><div><b>${fmtVol(Y.vol)}</b><small>bewegt${ele>=1?`, so viel wie etwa ${ele} ${ele===1?'Elefant':'Elefanten'}`:''}</small></div>
+    <div><b>${Y.recs.length}</b><small>neue Rekorde</small></div><div><b>${wochen(F.best)}</b><small>längste Serie am Stück</small></div></div>`},
+   {cls:'b',html:`<div class="rc-k">Dein Jahr auf einen Blick</div><div style="margin:16px 0 18px">${yearHeat(y,false)}</div>
+    <div class="rc-list"><div class="rc-row"><span>Stärkster Monat</span><b>${MONTHS[F.topM]}, ${F.months[F.topM]}-mal</b></div><div class="rc-row"><span>Lieblingstag</span><b>${WDAY[F.topD]}</b></div>
+    ${F.topPlan&&plan(F.topPlan[0])?`<div class="rc-row"><span>Häufigster Plan</span><b>${esc(plan(F.topPlan[0]).name)}</b></div>`:''}${F.topStudio?`<div class="rc-row"><span>Lieblingsstudio</span><b>${esc(F.topStudio[0])}</b></div>`:''}</div>`}];
+  if(F.prog.length){const p=F.prog[0];cards.push({cls:'w',html:`<div class="rc-k">Größter Fortschritt</div><div class="rc-h big">${esc(p.name)}</div>
+    <div class="rc-ft"><div><small>${MONTHS[+p.base.date.slice(5,7)-1]}</small><b>${fmtSet(p.base)}</b></div><span aria-hidden="true">→</span><div><small>${MONTHS[+p.last.date.slice(5,7)-1]}</small><b>${fmtSet(p.last)}</b></div></div>
+    <div class="rc-big">+${Math.round(p.g*100)} %</div>${F.prog.length>1?`<div class="rc-list">${F.prog.slice(1,4).map(q=>`<div class="rc-row"><span>${esc(q.name)}</span><b>+${Math.round(q.g*100)} %</b></div>`).join('')}</div>`:''}`})}
+  if(F.rc.length)cards.push({cls:'d',html:`<div class="rc-k">Deine Rekorde</div><div class="rc-big">${Y.recs.length}</div><div class="rc-l">Mal hast du dich selbst übertroffen</div>
+    <div class="rc-list" style="margin-top:22px">${F.rc.slice(0,5).map(r=>`<div class="rc-row"><span>${esc(r.name)}</span><b>${malTxt(r.n)}</b></div>`).join('')}</div>`});
+  if(pk.length>=2)cards.push({cls:'b',html:`<div class="rc-k">Dein Weg</div><div class="rc-h">${ymName(pk[0])} bis ${ymName(pk[pk.length-1])}</div><div style="margin-top:8px">${cmpHtml(pk[0],pk[pk.length-1],'R')}</div>`});
+  cards.push({cls:'w',html:`<div class="rc-k">${y}</div><div class="rc-h big">Das war dein Jahr.</div><p class="rc-p lg">${Y.n} Trainings und ${fmtNum(Y.reps)} Wiederholungen. Jede davon hat gezählt. Sei stolz auf dich.</p>`});
+  return cards}
+function checkRecap(){const c=curYm();const seen=S.settings.recapSeen;if(seen&&seen>=c)return;S.settings.recapSeen=c;saveData();if(!seen)return;
+  const k=shiftYm(c,-1);if(stats(...mRange(k)).n)openRecap('month',k)}
+
 function render(){ensureCur();view.day=todayStr();if(!['progress','settings'].includes(view.tab)&&!plans().find(p=>p.id===view.tab))view.tab=nextPlanId()||plans()[0].id;
   renderTop();if(view.tab==='progress')renderProgress();else if(view.tab==='settings')renderSettings();else renderPlan();renderSheet();renderPool();renderExSheet()}
 
@@ -523,12 +836,17 @@ document.getElementById('tPlus').onclick=()=>{tEnd=Math.max(tEnd,Date.now())+150
 document.getElementById('tStop').onclick=stopTimer;
 
 let photoTarget=null;
-function resizeImage(file){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const max=640;let w=im.width,h=im.height;const sc=Math.min(1,max/Math.max(w,h));w=Math.round(w*sc);h=Math.round(h*sc);
-  const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(im,0,0,w,h);res(cv.toDataURL('image/jpeg',.78))};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(file)})}
+function resizeImage(file,max=640,q=.78){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{let w=im.width,h=im.height;const sc=Math.min(1,max/Math.max(w,h));w=Math.round(w*sc);h=Math.round(h*sc);
+  const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(im,0,0,w,h);res(cv.toDataURL('image/jpeg',q))};im.onerror=rej;im.src=fr.result};fr.onerror=rej;fr.readAsDataURL(file)})}
 document.getElementById('photoIn').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f||!photoTarget)return;
   try{const data=await resizeImage(f);const id='img_'+uid();IMG[id]=data;await store.set('img:'+id,data);
     const ex=findEx(photoTarget.ex);let objs=photoTarget.ss?[ex.ss]:groupIds(ex.id).map(findEx).filter(Boolean);const olds=[...new Set(objs.map(o=>o.img).filter(Boolean))];
     objs.forEach(o=>o.img=id);for(const o of olds)if(!imgShared(o,null)){delete IMG[o];store.del('img:'+o)}saveData();render()}catch(err){toast('Foto konnte nicht geladen werden')}});
+
+document.getElementById('bodyIn').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f||!photoMonth)return;const k=photoMonth;
+  try{const data=await resizeImage(f,1200,.82);const id='img_'+uid();IMG[id]=data;await store.set('img:'+id,data);const P=photos();const old=P[k];P[k]=id;
+    if(old&&old!==id){delete IMG[old];store.del('img:'+old)}await saveNow();toast(`Foto für ${ymName(k)} gespeichert`);
+    if(view.recap)renderRecap();if(view.tab==='progress')renderProgress()}catch(err){toast('Foto konnte nicht geladen werden')}});
 
 function imgShared(id,self){return allEx().some(x=>(x.ex!==self&&x.ex.img===id)||(x.ex.ss&&x.ex.ss!==self&&x.ex.ss.img===id))}
 async function dupImg(id){if(!id||!IMG[id])return null;const n='img_'+uid();IMG[n]=IMG[id];await store.set('img:'+n,IMG[n]);return n}
@@ -538,7 +856,7 @@ async function copyProgram(pr,target){const np={id:uid(),name:pr.name,plans:[]};
     np.plans.push(q)}target.programs.push(np);return np}
 function hasHistory(pl){return pl.exercises.some(ex=>series([ex.id]).length)||Object.values(S.sessions).some(s=>s.planId===pl.id)}
 
-async function doExport(){await saveNow();const data={app:'trainingsplan',version:2,exported:new Date().toISOString(),studios:S.studios,settings:S.settings,sessions:S.sessions,images:IMG};
+async function doExport(){S.settings.lastBackup=todayStr();await saveNow();if(view.recap)renderRecap();const data={app:'trainingsplan',version:2,exported:new Date().toISOString(),studios:S.studios,settings:S.settings,sessions:S.sessions,images:IMG};
   const name='trainingsplan-backup-'+todayStr()+'.json';const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
   try{const file=new File([blob],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Trainingsplan Backup'});return}}catch(e){if(e&&e.name==='AbortError')return}
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
@@ -557,7 +875,7 @@ document.getElementById('importIn').addEventListener('change',async e=>{const f=
   catch(err){toast('Diese Datei ist kein gültiges Backup')}});
 
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b||b.tagName==='SELECT')return;
-  if((b.dataset.act==='closeSheet'||(b.dataset.act==='closePool'&&b.id==='pool')||(b.dataset.act==='closeEx'&&b.id==='exSheet'))&&e.target!==b)return;
+  if((b.dataset.act==='closeSheet'||(b.dataset.act==='closePool'&&b.id==='pool')||(b.dataset.act==='closeEx'&&b.id==='exSheet')||(b.dataset.act==='recapClose'&&b.id==='recap'))&&e.target!==b)return;
   const a=b.dataset.act,exId=b.dataset.ex,v=b.dataset.v;const p=plan(view.tab);const pr=program(),st=studio();
   if(a==='tab'){view.tab=v;view.edit=false;render();scrollTo(0,0)}
   else if(a==='toggleEdit'){view.edit=!view.edit;if(!view.edit){p.exercises.forEach(x=>{if(!x.name.trim())x.name='Neue Übung'});saveData()}render();scrollTo(0,0)}
@@ -568,6 +886,17 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
   else if(a==='remove'){const ex=findEx(exId);if(!confirm(`„${ex.name||'Übung'}“ aus diesem Plan nehmen? Sie bleibt in der Sammlung, der Verlauf bleibt erhalten.`))return;
     dropFromPlan(ex);if(view.exSheet===ex.id){view.exSheet=null;view.exNew=false}saveData();render()}
   else if(a==='progMode'){view.progMode=v;renderProgress()}
+  else if(a==='monthNav'){view.month=shiftYm(view.month||curYm(),+v);renderProgress()}
+  else if(a==='yearNav'){view.year=(view.year||+todayStr().slice(0,4))+(+v);renderProgress()}
+  else if(a==='photoYear'){view.photoYear=(view.photoYear||+todayStr().slice(0,4))+(+v);renderProgress()}
+  else if(a==='trend'){view.trend=v;renderProgress()}
+  else if(a==='recap'){openRecap(b.dataset.k,v)}
+  else if(a==='recapClose'){view.recap=null;renderRecap()}
+  else if(a==='rcNext'){const tr=b.closest('.rc').querySelector('.rc-track');tr.scrollBy({left:tr.clientWidth,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
+  else if(a==='photoAdd'){closeLb();photoMonth=v;document.getElementById('bodyIn').click()}
+  else if(a==='photoView'){showPhoto(v)}
+  else if(a==='lbClose'){closeLb()}
+  else if(a==='photoDel'){if(!confirm(`Foto für ${ymName(v)} löschen?`))return;const P=photos();const id=P[v];delete P[v];if(id){delete IMG[id];store.del('img:'+id)}closeLb();saveData();if(view.tab==='progress')renderProgress();toast('Foto gelöscht')}
   else if(a==='progFilter'){view.progFilter=v;renderProgress()}
   else if(a==='poolCat'){view.poolCat=v;renderPool()}
   else if(a==='progCat'){view.progCat=v;renderProgress()}
@@ -616,6 +945,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
 });
 
 document.addEventListener('input',e=>{const t=e.target;
+  if(t.dataset.cmp!==undefined){const v=+t.value,sx=t.dataset.cmp;const im=document.getElementById('cmpA'+sx),ln=document.getElementById('cmpL'+sx);if(im)im.style.clipPath=`inset(0 ${100-v}% 0 0)`;if(ln)ln.style.left=v+'%';return}
   if(t.classList.contains('num')){const v=parseNum(t.value);const en=getEntry(view.tab,t.dataset.ex,true);const arr=en[t.dataset.p];const i=+t.dataset.i;arr[i]=arr[i]||[null,null];arr[i][+t.dataset.f]=v;
     if(t.dataset.f==='0'){const ph=parseNum(t.placeholder);t.classList.toggle('better',v!=null&&ph!=null&&v>ph)}saveData()}
   else if(t.dataset.note){for(const id of groupIds(t.dataset.note)){const x=findEx(id);if(x)x.note=t.value;document.querySelectorAll(`[data-noteview="${id}"]`).forEach(v=>{v.textContent=t.value;v.hidden=!t.value.trim()})}saveData()}
@@ -644,6 +974,7 @@ document.addEventListener('change',async e=>{const t=e.target;
   else if(t.dataset.s==='catname'){const i=+t.dataset.i,old=cats()[i],n=t.value.trim();if(!n||n===old)return;cats()[i]=n;allEx().forEach(x=>{if(x.ex.cat===old)x.ex.cat=n});saveData()}
   else if(t.dataset.s==='pause'){S.settings.pause=+t.value;saveData()}
   else if(['prname','stname','pname'].includes(t.dataset.s)){renderTop()}
+  else if(t.dataset.cmpsel){view['cmp'+t.dataset.cmpsel]=t.value;renderProgress()}
   else if(t.dataset.act==='progSel'){view.progKey=t.value;renderProgress()}
   else if(t.dataset.dropdone){const en=getEntry(view.tab,t.dataset.dropdone,true);if(!Array.isArray(en.dropDone))en.dropDone=[];en.dropDone[+t.dataset.i]=t.checked;saveData()}
   else if(t.dataset.ssdone){getEntry(view.tab,t.dataset.ssdone,true).ssDone=t.checked;saveData()}});
@@ -688,7 +1019,7 @@ document.addEventListener('mousemove',e=>dragMove(e.clientX,e.clientY,e));docume
 document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('[data-drag]'))e.preventDefault()});
 document.addEventListener('click',e=>{if(Date.now()<noClickUntil){e.stopPropagation();e.preventDefault()}},true);
 
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveNow();else if(view.day&&view.day!==todayStr()){if(!['progress','settings'].includes(view.tab)){view.tab=null;view.edit=false}render();scrollTo(0,0)}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveNow();else if(view.day&&view.day!==todayStr()){if(!['progress','settings'].includes(view.tab)){view.tab=null;view.edit=false}render();scrollTo(0,0);checkRecap()}});
 window.addEventListener('pagehide',()=>saveNow());
 
 (async function init(){await store.open();
@@ -696,7 +1027,8 @@ window.addEventListener('pagehide',()=>saveNow());
   S.settings=Object.assign({pause:90,cur:{}},await store.get('settings')||{});if(!S.settings.cur)S.settings.cur={};
   S.sessions=await store.get('sessions')||{};
   for(const x of allEx()){for(const id of [x.ex.img,x.ex.ss&&x.ex.ss.img]){if(id&&!IMG[id]){const d=await store.get('img:'+id);if(d)IMG[id]=d}}}
-  ensureCur();saveNow();render();
+  for(const id of Object.values(S.settings.photos||{})){if(id&&!IMG[id]){const d=await store.get('img:'+id);if(d)IMG[id]=d}}
+  ensureCur();saveNow();render();setTimeout(checkRecap,500);
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
   try{if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
 })();
