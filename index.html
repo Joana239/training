@@ -275,6 +275,13 @@ body.dragging-plan main .card .field span{display:none}
 .rc-dots i{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.25;transition:opacity .2s}
 .rc-dots i.on{opacity:.9}
 @media (prefers-reduced-motion:reduce){.rc-dots i{transition:none}}
+.seg.six button{padding:9px 1px;font-size:12.5px}
+.hero{padding:16px}
+.hero-n{font-size:30px;font-weight:700;line-height:1.15;margin:4px 0 8px;color:var(--ink)}
+.topx{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:11px 0;color:inherit;font-size:14px}
+.topx:first-child{border-top:0}
+.topg{min-width:56px;text-align:right;color:#7b2638}
+.bup{display:inline-block;margin-top:4px;font-size:11px;font-weight:700;color:#fdf9f4;background:var(--acc);border-radius:999px;padding:1px 7px}
 </style>
 </head>
 <body>
@@ -467,8 +474,8 @@ function psOf(e,s){return e&&e.ps&&e.ps[s]||null}
 function psAny(ps){return Array.isArray(ps)&&ps.some(o=>o&&(o.s||(o.d||[]).some(Boolean)))}
 function pillRow(ex,s,cur){if(!ex.drops&&!ex.ss)return '';const o=psOf(cur,s)||{};const d=o.d||[];
   return `<div class="pills">${Array.from({length:ex.drops},(_,k)=>`<button class="pill ${d[k]?'on':''}" data-act="pill" data-ex="${ex.id}" data-s="${s}" data-k="${k}" aria-pressed="${!!d[k]}">Drop</button>`).join('')}${ex.ss?`<button class="pill sp ${o.s?'on':''}" data-act="pill" data-ex="${ex.id}" data-s="${s}" data-k="s" aria-pressed="${!!o.s}">${esc(pillLabel(ex))}</button>`:''}</div>`}
-function setRows(ex,part,count,last,cur,label,cls){let h='';
-  for(let i=0;i<count;i++){const l=last&&last[part]&&last[part][i]||[];const c=cur&&cur[part]&&cur[part][i]||[];
+function setRows(ex,part,count,last,cur,label,cls){let h='';const top=last&&heavySet(last[part]);
+  for(let i=0;i<count;i++){const l=i===0&&top?top:[];const c=cur&&cur[part]&&cur[part][i]||[];
     h+=`<div class="grid ${cls}"><span class="lab">${label} ${i+1}</span>
     <input class="num ${c[0]!=null&&l[0]!=null&&c[0]>l[0]?'better':''}" inputmode="decimal" data-ex="${ex.id}" data-p="${part}" data-i="${i}" data-f="0" value="${fmtNum(c[0])}" placeholder="${fmtNum(l[0])}" aria-label="${label} ${i+1} Gewicht">
     <input class="num" inputmode="numeric" data-ex="${ex.id}" data-p="${part}" data-i="${i}" data-f="1" value="${fmtNum(c[1])}" placeholder="${fmtNum(l[1])}" aria-label="${label} ${i+1} Wiederholungen"></div>`+(part==='s'?pillRow(ex,i,cur):'')}
@@ -486,7 +493,7 @@ function renderPlan(){const p=plan(view.tab);const list=live(p.exercises);const 
     h+=`<div class="ex-foot"><button class="btn fill" data-act="timer">Pause ${fmtTime(S.settings.pause)}</button>
       <button class="btn" data-act="note" data-ex="${ex.id}">Notiz</button></div>
       <div data-notebox="${ex.id}" hidden><textarea data-note="${ex.id}" placeholder="Sitzhöhe, Griff, Gefühl …">${esc(ex.note||'')}</textarea></div></section>`;
-    return h}).join('')+`<p class="muted" style="text-align:center">Graue Zahlen zeigen dein letztes Training in diesem Studio. Alles wird automatisch gespeichert.</p>`}
+    return h}).join('')+`<p class="muted" style="text-align:center">Die grauen Zahlen in Satz 1 zeigen deinen schwersten Satz vom letzten Training in diesem Studio. Alles wird automatisch gespeichert.</p>`}
 
 function selectHtml(attr,val,opts){return `<select class="text" ${attr}>${opts.map(o=>`<option value="${o}" ${o==val?'selected':''}>${o}</option>`).join('')}</select>`}
 
@@ -515,10 +522,10 @@ function progressItems(){const groups={};for(const x of allEx()){const n=norm(x.
   if(!groups[k])groups[k]={key:k,st:x.st,name:x.ex.name.trim(),ids:[],color:x.pl?x.pl.color:'wein',active:false};groups[k].ids.push(x.ex.id);if(!x.arch)groups[k].active=true}
   return Object.values(groups).map(g=>(g.n=series(g.ids).length,g)).filter(g=>g.active||g.n)}
 
-function renderProgress(){analyze();const mode=view.progMode||'overview';
-  ({overview:renderOverview,single:renderSingle,month:renderMonth,year:renderYear,photos:renderPhotos}[mode]||renderOverview)();
-  const L=[['overview','Übersicht'],['single','Übung'],['month','Monat'],['year','Jahr'],['photos','Fotos']];
-  const seg=`<div class="seg five">${L.map(([k,t])=>`<button class="${mode===k?'on':''}" data-act="progMode" data-v="${k}">${t}</button>`).join('')}</div>`;
+function renderProgress(){analyze();const mode=view.progMode||'verlauf';
+  ({verlauf:renderVerlauf,overview:renderOverview,single:renderSingle,month:renderMonth,year:renderYear,photos:renderPhotos}[mode]||renderVerlauf)();
+  const L=[['verlauf','Verlauf'],['single','Übung'],['month','Monat'],['year','Jahr'],['overview','Sätze'],['photos','Fotos']];
+  const seg=`<div class="seg six">${L.map(([k,t])=>`<button class="${mode===k?'on':''}" data-act="progMode" data-v="${k}">${t}</button>`).join('')}</div>`;
   document.getElementById('main').insertAdjacentHTML('afterbegin',seg)}
 function cell(x){if(!x||(x[0]==null&&x[1]==null))return '<span class="n">–</span>';return `${x[0]!=null?fmtNum(x[0]):'–'}${x[1]!=null?' × '+fmtNum(x[1]):''}`}
 function renderOverview(){const main=document.getElementById('main');const pl=plans();const f=view.progFilter||'all';
@@ -544,12 +551,12 @@ function renderOverview(){const main=document.getElementById('main');const pl=pl
     if(!anyPs&&ex.ss)h+=`<div class="ov-r" style="${g};color:${col.ss}"><span>Super</span>${L.map((x,k)=>`<span class="${k===0?'c1':''}">${x.e.ssDone?'✓':'–'}</span>`).join('')}</div>`;
     h+=`</details>`}
   main.innerHTML=h}
-function chartSvg(data,color,int){const W=340,H=170,pl=36,pr=12,pt=14,pb=26;
+function chartSvg(data,color,int,label){const W=340,H=170,pl=36,pr=12,pt=14,pb=26;
   if(data.length<2)return `<p class="muted" style="margin:14px 0">Ab dem zweiten Training siehst du hier deine Kurve.</p>`;
   const vs=data.map(d=>d.v);let mn=Math.min(...vs),mx=Math.max(...vs);if(mn===mx){mn-=1;mx+=1}const pad=(mx-mn)*.12;mn-=pad;mx+=pad;
   const x=i=>pl+(W-pl-pr)*i/(data.length-1),y=v=>pt+(H-pt-pb)*(1-(v-mn)/(mx-mn));
   const ticks=[mn+(mx-mn)*.1,(mn+mx)/2,mx-(mx-mn)*.1];
-  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${int?'Wiederholungsverlauf':'Gewichtsverlauf'}">`;
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${label||(int?'Wiederholungsverlauf':'Gewichtsverlauf')}">`;
   ticks.forEach(t=>{s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}" stroke="#e6d9c9" stroke-width="1"/><text x="${pl-6}" y="${y(t)+4}" font-size="11" text-anchor="end" fill="#8c7a70">${fmtNum(int?Math.round(t):Math.round(t*2)/2)}</text>`});
   s+=`<polyline fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${data.map((d,i)=>x(i)+','+y(d.v)).join(' ')}"/>`;
   data.forEach((d,i)=>{if(data.length<=20||i===data.length-1)s+=`<circle cx="${x(i)}" cy="${y(d.v)}" r="${i===data.length-1?4.5:3}" fill="${color}"/>`});
@@ -564,17 +571,21 @@ function renderSingle(){const main=document.getElementById('main');const items=p
   let opts='';for(const st of S.studios){const g=items.filter(i=>i.st===st);if(g.length)opts+=`<optgroup label="${esc(st.name)}">${g.map(i=>`<option value="${esc(i.key)}" ${i.key===view.progKey?'selected':''}>${esc(i.name)}</option>`).join('')}</optgroup>`}
   let h=`<p class="muted" style="margin:2px 2px 10px">Trainings insgesamt: ${total}</p><section class="card">
     <select class="text" data-act="progSel" aria-label="Übung wählen">${opts}</select><div class="muted" style="margin-top:6px">${esc(it.st.name)}</div>`;
-  if(data.length){const first=data[0].v,lastv=data[data.length-1].v;const pct=first?Math.round((lastv-first)/first*100):0;
-    const A=AN||analyze();const L3=lastSessionsK(it.ids,3);const rs=repsSeries(it.ids);const lastR=rs.length?rs[rs.length-1].v:null,prevR=rs.length>1?rs[rs.length-2].v:null;
-    const kgs=L3.length?(L3[0].e.s||[]).filter(x=>x&&x[0]!=null).map(x=>x[0]):[];const lastKg=kgs.length?Math.max(...kgs):null;
-    const hh=A.hist[it.key];const recAt=hh&&lastKg!=null?hh.by[lastKg]:null;const tr=view.trend||'reps';const repBy=Object.fromEntries(rs.map(x=>[x.date,x.v]));
-    h+=`<div class="stats"><div class="stat"><small>Wdh. letztes Training</small><b>${lastR!=null?fmtNum(lastR):'–'}</b>${lastR!=null&&prevR!=null?delta(lastR,prevR):''}</div>
+  if(data.length){const lastv=data[data.length-1].v;
+    const A=AN||analyze();const L4=lastSessionsK(it.ids,4);const ks=kraftSeries(it.ids);const rs=repsSeries(it.ids);
+    const kN=ks.length?ks[ks.length-1].v:null,kP=ks.length>1?ks[ks.length-2].v:null,k0=ks.length?ks[0].v:null;const pct=k0?kN/k0-1:0;
+    const top=L4.length?heavySet(L4[0].e.s):null;const lastKg=top?top[0]:null;const hh=A.hist[it.key];const recAt=hh&&lastKg!=null?hh.by[lastKg]:null;
+    const tr=['kraft','kg','reps'].includes(view.trend)?view.trend:'kraft';
+    const cap={kraft:'Kraftwert deines besten Satzes pro Training. Mehr Gewicht zählt mehr als mehr Wiederholungen.',kg:'Schwerster Arbeitssatz pro Training',reps:'Wiederholungen aller Sätze pro Training'}[tr];
+    const chart=tr==='kraft'?chartSvg(ks.slice(-24),c.acc,true,'Kraftverlauf'):tr==='reps'?chartSvg(rs.slice(-24),c.acc,true):chartSvg(data,c.acc);
+    h+=`<div class="stats"><div class="stat"><small>Kraftwert</small><b>${kN!=null?fmtNum(Math.round(kN))+' kg':'–'}</b>${kN!=null&&kP!=null?delta(Math.round(kN),Math.round(kP)):''}</div>
     <div class="stat"><small>${lastKg!=null?'Rekord bei '+fmtNum(lastKg)+' kg':'Rekord'}</small><b>${recAt!=null?fmtNum(recAt)+' Wdh.':'–'}</b></div>
-    <div class="stat"><small>Aktuell</small><b>${fmtNum(lastv)} kg</b></div><div class="stat"><small>Seit Start</small><b style="color:${c.acc}">${pct>0?'+':''}${pct} %</b></div></div>
-    ${barsHtml(L3,c)}
-    <div class="chips" style="margin:16px 0 4px"><button class="chip ${tr==='reps'?'on':''}" data-act="trend" data-v="reps">Wiederholungen</button><button class="chip ${tr==='kg'?'on':''}" data-act="trend" data-v="kg">Gewicht</button></div>
-    <div class="muted">${tr==='reps'?'Wiederholungen aller Sätze pro Training':'Schwerster Arbeitssatz pro Training'}</div>${tr==='reps'?chartSvg(rs.slice(-20),c.acc,true):chartSvg(data,c.acc)}
-    <table class="hist">${data.slice(-8).reverse().map(d=>`<tr><td>${fmtDate(d.date)}</td><td>${fmtNum(d.v)} kg</td><td>${repBy[d.date]!=null?fmtNum(repBy[d.date])+' Wdh.':''}</td></tr>`).join('')}</table>`}
+    <div class="stat"><small>Aktuell</small><b>${fmtNum(lastv)} kg</b></div><div class="stat"><small>Kraft seit Start</small><b style="color:${c.acc}">${fmtPct(pct)}</b></div></div>
+    ${barsHtml(L4,c)}
+    <div class="chips" style="margin:16px 0 4px">${[['kraft','Kraft'],['kg','Gewicht'],['reps','Wiederholungen']].map(([k,t])=>`<button class="chip ${tr===k?'on':''}" data-act="trend" data-v="${k}">${t}</button>`).join('')}</div>
+    <div class="muted">${cap}</div>${chart}
+    <table class="hist">${lastSessionsK(it.ids,8).map(x=>{const hs=heavySet(x.e.s);const kr=Math.max(0,...(x.e.s||[]).filter(v=>v&&v[0]!=null&&v[1]!=null).map(v=>e1rm(v[0],v[1])));
+      return `<tr><td>${x.start?'Start':fmtDate(x.date)}</td><td>${hs?fmtNum(hs[0])+' kg'+(hs[1]!=null?' × '+fmtNum(hs[1]):''):''}</td><td>${kr?'Kraft '+fmtNum(Math.round(kr)):''}</td></tr>`}).join('')}</table>`}
   else h+=`<p class="muted" style="margin-top:14px">Für diese Übung gibt es noch keine Einträge.</p>`;
   main.innerHTML=h+`</section>`}
 
@@ -704,11 +715,11 @@ function lastSessionsK(ids,n){const out=[];const keys=Object.keys(S.sessions).so
 function repsSeries(ids){const by={};for(const s of Object.values(S.sessions)){if(s.planId==='start')continue;for(const id of ids){const e=s.data[id];if(!e)continue;let r=0,has=false;for(const x of e.s||[])if(x&&x[1]!=null){r+=x[1];has=true}if(has)by[s.date]=(by[s.date]||0)+r}}
   return Object.keys(by).sort().map(d=>({date:d,v:by[d]}))}
 function barsHtml(L,c){const A=AN||analyze();
-  const rows=L.map(x=>({x,sets:(x.e.s||[]).map((s,i)=>s&&s[1]!=null?{kg:s[0],r:s[1],i}:null).filter(Boolean)})).filter(r=>r.sets.length);
+  const rows=L.slice(0,3).map((x,j)=>{const a=heavySet(x.e.s),b=L[j+1]&&heavySet(L[j+1].e.s);return {x,up:a&&b&&a[0]>b[0]?a[0]-b[0]:0}}).map(({x,up})=>({x,up,sets:(x.e.s||[]).map((s,i)=>s&&s[1]!=null?{kg:s[0],r:s[1],i}:null).filter(Boolean)})).filter(r=>r.sets.length);
   if(!rows.length)return '';
   const mx=Math.max(1,...rows.flatMap(r=>r.sets.map(s=>s.r)));let anyRec=false,anyD=false,anyS=false;
-  const h=rows.map(({x,sets})=>{const kgs=[...new Set(sets.map(s=>s.kg))];const same=kgs.length===1;const mk=A.marks[x.key+'|'+x.id]||[];
-    return `<div class="brow"><div class="bdate"><b>${x.start?'Start':fmtDate(x.date).slice(0,5)}</b>${same&&kgs[0]!=null?fmtNum(kgs[0])+' kg':''}</div><div class="bset">${sets.map(s=>{
+  const h=rows.map(({x,sets,up})=>{const kgs=[...new Set(sets.map(s=>s.kg))];const same=kgs.length===1;const mk=A.marks[x.key+'|'+x.id]||[];
+    return `<div class="brow"><div class="bdate"><b>${x.start?'Start':fmtDate(x.date).slice(0,5)}</b>${same&&kgs[0]!=null?fmtNum(kgs[0])+' kg':''}${up?`<span class="bup">+${fmtNum(up)} kg</span>`:''}</div><div class="bset">${sets.map(s=>{
       const rec=mk.includes(s.i);if(rec)anyRec=true;const o=psOf(x.e,s.i)||{};const nd=(o.d||[]).filter(Boolean).length;if(nd)anyD=true;if(o.s)anyS=true;
       return `<div class="bcol"><div class="bbar${rec?' rec':''}" style="height:${Math.round(10+s.r/mx*72)}px${rec?'':';background:'+c.acc}"></div><div class="bnum">${fmtNum(s.r)}</div>${same?'':`<div class="bkg">${s.kg!=null?fmtNum(s.kg)+' kg':'–'}</div>`}<div class="bmk">${`<i style="background:${c.drop}"></i>`.repeat(nd)}${o.s?`<i class="s" style="background:${c.ss}"></i>`:''}</div></div>`}).join('')}</div></div>`}).join('');
   const leg=[anyD&&`<span><i style="background:${c.drop}"></i>Drop</span>`,anyS&&`<span><i class="s" style="background:${c.ss}"></i>Supersatz</span>`,anyRec&&`<span><i style="background:var(--gold)"></i>Rekord</span>`].filter(Boolean);
@@ -716,12 +727,12 @@ function barsHtml(L,c){const A=AN||analyze();
 
 /* --- Monat --- */
 function renderMonth(){const main=document.getElementById('main');const c=curYm();const k=view.month&&view.month<=c?view.month:c;view.month=k;
-  const M=ymName(k),pk=shiftYm(k,-1);const S1=stats(...mRange(k));const dd=todayStr().slice(8);const S0=k===c?stats(pk+'-01',pk+'-'+dd):stats(...mRange(pk));const img=photoOf(k);
+  const M=ymName(k),pk=shiftYm(k,-1);const S1=stats(...mRange(k));const dd=todayStr().slice(8);const S0=k===c?stats(pk+'-01',pk+'-'+dd):stats(...mRange(pk));const img=photoOf(k);const kc=kraftChange(...mRange(k),true);
   let h=`<div class="mnav"><button data-act="monthNav" data-v="-1" aria-label="Vorheriger Monat">‹</button><b>${M} ${k.slice(0,4)}</b><button data-act="monthNav" data-v="1" ${k>=c?'disabled':''} aria-label="Nächster Monat">›</button></div>
     <section class="card">${calHtml(k)}</section>
-    <div class="stats"><div class="stat"><small>Trainings</small><b>${S1.n}</b>${delta(S1.n,S0.n)}</div><div class="stat"><small>Wiederholungen</small><b>${fmtNum(S1.reps)}</b>${delta(S1.reps,S0.reps)}</div>
-    <div class="stat"><small>Bewegt</small><b>${fmtVol(S1.vol)}</b></div><div class="stat"><small>Neue Rekorde</small><b>${S1.recs.length}</b></div></div>
-    <p class="muted" style="margin:-4px 2px 14px">Die kleinen Zahlen vergleichen mit ${k===c?`dem 1. bis ${+dd}. ${ymName(pk)}`:ymName(pk)}.${k===c?` Aktuelle Serie: ${wochen(curStreak(todayStr()))} am Stück.`:''}</p>`;
+    <div class="stats"><div class="stat"><small>Kraft zum ${ymName(pk)}</small><b>${kc!=null?fmtPct(kc):'–'}</b></div><div class="stat"><small>Trainings</small><b>${S1.n}</b>${delta(S1.n,S0.n)}</div>
+    <div class="stat"><small>Neue Rekorde</small><b>${S1.recs.length}</b></div><div class="stat"><small>Wiederholungen</small><b>${fmtNum(S1.reps)}</b>${delta(S1.reps,S0.reps)}</div></div>
+    <p class="muted" style="margin:-4px 2px 14px">Insgesamt ${fmtVol(S1.vol)} bewegt. Die kleinen Zahlen vergleichen mit ${k===c?`dem 1. bis ${+dd}. ${ymName(pk)}`:ymName(pk)}.${k===c?` Aktuelle Serie: ${wochen(curStreak(todayStr()))} am Stück.`:''}</p>`;
   if(S1.recs.length)h+=`<h2 class="section-title">Rekorde im ${M}</h2><section class="card">${S1.recs.slice().reverse().slice(0,10).map(r=>`<div class="rl"><span>${esc(r.name)}</span><span><b>${fmtSet(r)}</b> <span class="muted">${fmtDate(r.date).slice(0,5)}</span></span></div>`).join('')}</section>`;
   h+=`<section class="card"><div class="phm">${img?`<button class="ph-t" style="width:58px" data-act="photoView" data-v="${k}"><span class="im"><img src="${img}" alt="Foto ${M}"></span></button>`:''}
     <div style="flex:1"><b>Foto für ${M}</b><div class="muted">${img?'Gespeichert. Antippen zum Ansehen.':'Noch kein Foto für diesen Monat.'}</div></div>${img?'':`<button class="btn" data-act="photoAdd" data-v="${k}">Hinzufügen</button>`}</div></section>`;
@@ -740,12 +751,13 @@ function renderYear(){const main=document.getElementById('main');const cy=+today
   const F=yearFacts(y),Y=F.Y;const open=y<cy||todayStr()>=cy+'-12-15';const col=(PRESETS.wein).acc;
   let h=`<div class="mnav"><button data-act="yearNav" data-v="-1" aria-label="Vorheriges Jahr">‹</button><b>${y}</b><button data-act="yearNav" data-v="1" ${y>=cy?'disabled':''} aria-label="Nächstes Jahr">›</button></div>`;
   if(!Y.n){main.innerHTML=h+`<div class="empty"><h2>Noch keine Trainings in ${y}</h2><p>Sobald du trainierst, füllt sich hier dein Jahr.</p></div>`;return}
-  h+=`<div class="stats"><div class="stat"><small>Trainings</small><b>${Y.n}</b></div><div class="stat"><small>Wiederholungen</small><b>${fmtNum(Y.reps)}</b></div>
-    <div class="stat"><small>Bewegt</small><b>${fmtVol(Y.vol)}</b></div><div class="stat"><small>Neue Rekorde</small><b>${Y.recs.length}</b></div></div>
+  const kc=kraftChange(...yRange(y),false);
+  h+=`<div class="stats"><div class="stat"><small>Kraft im Jahr</small><b>${kc!=null?fmtPct(kc):'–'}</b></div><div class="stat"><small>Trainings</small><b>${Y.n}</b></div>
+    <div class="stat"><small>Neue Rekorde</small><b>${Y.recs.length}</b></div><div class="stat"><small>Wiederholungen</small><b>${fmtNum(Y.reps)}</b></div></div>
     <section class="card">${yearHeat(y,false)}</section>
     <section class="card"><div class="muted">Trainings pro Monat</div>${monthBars(y,col)}
     <div class="rl"><span>Stärkster Monat</span><b>${MONTHS[F.topM]}, ${F.months[F.topM]} Trainings</b></div>
-    <div class="rl"><span>Lieblingstag</span><b>${WDAY[F.topD]}</b></div><div class="rl"><span>Längste Serie</span><b>${wochen(F.best)} am Stück</b></div></section>`;
+    <div class="rl"><span>Lieblingstag</span><b>${WDAY[F.topD]}</b></div><div class="rl"><span>Längste Serie</span><b>${wochen(F.best)} am Stück</b></div><div class="rl"><span>Bewegt</span><b>${fmtVol(Y.vol)}</b></div></section>`;
   if(F.prog.length)h+=`<h2 class="section-title">Wo du gestartet bist, wo du stehst</h2><section class="card">${F.prog.slice(0,6).map(p=>`<div class="rl col"><b>${esc(p.name)}</b><span><span class="muted">${MSHORT[+p.base.date.slice(5,7)-1]}</span> ${fmtSet(p.base)} <span class="muted">→ ${MSHORT[+p.last.date.slice(5,7)-1]}</span> ${fmtSet(p.last)} <span class="delta up">+${Math.round(p.g*100)} %</span></span></div>`).join('')}
     <p class="muted" style="margin:8px 0 0">Verglichen wird dein bester Satz im ersten und im letzten Training des Jahres, Gewicht und Wiederholungen zusammen.</p></section>`;
   h+=open?`<button class="btn fill wide" style="height:48px" data-act="recap" data-k="year" data-v="${y}">Jahres-Recap ${y} ansehen</button>`:`<p class="muted" style="text-align:center">Dein Jahres-Recap wird am 15. Dezember freigeschaltet.</p>`;
@@ -790,10 +802,10 @@ function renderRecap(){let el=document.getElementById('recap');if(!view.recap){e
   tr.addEventListener('scroll',upd,{passive:true});upd();document.body.style.overflow='hidden'}
 function monthCards(k){const M=ymName(k),pk=shiftYm(k,-1);const S1=stats(...mRange(k)),S0=stats(...mRange(pk));
   const hi=progressIn(...mRange(k),true)[0];const rc=recCount(S1.recs);const img=photoOf(k);const end=k+'-31'<todayStr()?k+'-31':todayStr();const str=curStreak(end);
-  const lb=S.settings.lastBackup;
+  const lb=S.settings.lastBackup;const kcM=kraftChange(...mRange(k),true);
   return [
     {cls:'g',html:`<div class="rc-k">Dein ${M}</div><div class="rc-big">${S1.n}</div><div class="rc-l">${S1.n===1?'Training':'Trainings'}${S0.n?(S1.n===S0.n?`, so viele wie im ${ymName(pk)}`:`, ${signed(S1.n-S0.n)} zum ${ymName(pk)}`):''}</div>
-      <div class="rc-grid"><div><b>${fmtNum(S1.reps)}</b><small>Wiederholungen${S0.n?`<br>${signed(S1.reps-S0.reps)} zum Vormonat`:''}</small></div><div><b>${fmtVol(S1.vol)}</b><small>bewegt</small></div></div>`},
+      <div class="rc-grid">${kcM!=null?`<div><b>${fmtPct(kcM)}</b><small>Kraft zum ${ymName(pk)}</small></div>`:''}<div><b>${fmtNum(S1.reps)}</b><small>Wiederholungen${S0.n?`<br>${signed(S1.reps-S0.reps)} zum Vormonat`:''}</small></div><div><b>${fmtVol(S1.vol)}</b><small>bewegt</small></div></div>`},
     {cls:'l',html:`<div class="rc-k">Neue Rekorde</div><div class="rc-big">${S1.recs.length}</div>
       ${hi?`<div class="rc-sub">Am meisten zugelegt</div><div class="rc-h">${esc(hi.name)}</div><div class="rc-ft"><div><small>vorher</small><b>${fmtSet(hi.base)}</b></div><span aria-hidden="true">→</span><div><small>jetzt</small><b>${fmtSet(hi.last)}</b></div></div>`:''}
       ${rc.length?`<div class="rc-list">${rc.slice(0,4).map(r=>`<div class="rc-row"><span>${esc(r.name)}</span><b>${malTxt(r.n)}</b></div>`).join('')}</div>`:`<p class="rc-p">Diesen Monat ohne neuen Rekord. Dranbleiben zählt trotzdem.</p>`}`},
@@ -801,10 +813,10 @@ function monthCards(k){const M=ymName(k),pk=shiftYm(k,-1);const S1=stats(...mRan
       <div class="rc-box">${img?`<img class="rc-ph" src="${img}" alt="Foto ${M}"><div><b>Foto für ${M}</b><div class="rc-p">ist gespeichert.</div></div>`:`<div style="flex:1"><b>Foto für ${M}</b><div class="rc-p">Halt fest, wo du gerade stehst.</div></div><button class="rc-btn sm" data-act="photoAdd" data-v="${k}">Hinzufügen</button>`}</div>
       <div class="rc-box"><div style="flex:1"><b>Backup</b><div class="rc-p">${lb?`Zuletzt am ${fmtDate(lb)}.`:'Noch kein Backup gespeichert.'}</div></div><button class="rc-btn sm" data-act="export">Sichern</button></div>`,
       extra:k.endsWith('-12')?`<button class="rc-btn" data-act="recap" data-k="year" data-v="${k.slice(0,4)}">Jahres-Recap ${k.slice(0,4)} ansehen</button>`:''}]}
-function yearCards(y){const F=yearFacts(y),Y=F.Y;const ele=Math.round(Y.vol/6000);const pk=Object.keys(photos()).filter(k=>k.startsWith(y+'-')&&photoOf(k)).sort();
+function yearCards(y){const F=yearFacts(y),Y=F.Y;const kcY=kraftChange(...yRange(y),false);const ele=Math.round(Y.vol/6000);const pk=Object.keys(photos()).filter(k=>k.startsWith(y+'-')&&photoOf(k)).sort();
   const cards=[{cls:'d',html:`<div class="rc-k">Dein Jahr ${y}</div><div class="rc-big xl">${Y.n}</div><div class="rc-l">Trainings absolviert</div>
     <div class="rc-grid"><div><b>${fmtNum(Y.reps)}</b><small>Wiederholungen</small></div><div><b>${fmtVol(Y.vol)}</b><small>bewegt${ele>=1?`, so viel wie etwa ${ele} ${ele===1?'Elefant':'Elefanten'}`:''}</small></div>
-    <div><b>${Y.recs.length}</b><small>neue Rekorde</small></div><div><b>${wochen(F.best)}</b><small>längste Serie am Stück</small></div></div>`},
+    ${kcY!=null?`<div><b>${fmtPct(kcY)}</b><small>stärker als zu Jahresbeginn</small></div>`:`<div><b>${Y.recs.length}</b><small>neue Rekorde</small></div>`}<div><b>${wochen(F.best)}</b><small>längste Serie am Stück</small></div></div>`},
    {cls:'b',html:`<div class="rc-k">Dein Jahr auf einen Blick</div><div style="margin:16px 0 18px">${yearHeat(y,false)}</div>
     <div class="rc-list"><div class="rc-row"><span>Stärkster Monat</span><b>${MONTHS[F.topM]}, ${F.months[F.topM]}-mal</b></div><div class="rc-row"><span>Lieblingstag</span><b>${WDAY[F.topD]}</b></div>
     ${F.topPlan&&plan(F.topPlan[0])?`<div class="rc-row"><span>Häufigster Plan</span><b>${esc(plan(F.topPlan[0]).name)}</b></div>`:''}${F.topStudio?`<div class="rc-row"><span>Lieblingsstudio</span><b>${esc(F.topStudio[0])}</b></div>`:''}</div>`}];
@@ -818,6 +830,50 @@ function yearCards(y){const F=yearFacts(y),Y=F.Y;const ele=Math.round(Y.vol/6000
   return cards}
 function checkRecap(){const c=curYm();const seen=S.settings.recapSeen;if(seen&&seen>=c)return;S.settings.recapSeen=c;saveData();if(!seen)return;
   const k=shiftYm(c,-1);if(stats(...mRange(k)).n)openRecap('month',k)}
+
+/* --- Kraftwert und Verlauf --- */
+const fmtPct=g=>(g>0?'+':g<0?'−':'±')+Math.abs(Math.round(g*100))+' %';
+function heavySet(arr){let b=null;for(const x of arr||[])if(x&&x[0]!=null&&(!b||x[0]>b[0]||(x[0]===b[0]&&(x[1]||0)>(b[1]||0))))b=x;return b}
+function kraftSeries(ids){const by={};for(const s of Object.values(S.sessions)){if(s.planId==='start')continue;for(const id of ids){const e=s.data[id];if(!e)continue;
+  for(const x of e.s||[])if(x&&x[0]!=null&&x[1]!=null){const v=e1rm(x[0],x[1]);if(by[s.date]==null||v>by[s.date])by[s.date]=v}}}
+  return Object.keys(by).sort().map(d=>({date:d,v:Math.round(by[d]*10)/10}))}
+function kraftChange(from,to,useBefore){const A=AN||analyze();const gs=[];
+  for(const list of Object.values(A.byGroup)){const inR=list.filter(x=>!x.start&&x.date>=from&&x.date<=to);if(!inR.length)continue;
+    const base=useBefore?[...list].reverse().find(x=>x.date<from):(inR.length>=2?inR[0]:null);if(!base||!base.e1)continue;gs.push(inR[inR.length-1].e1/base.e1-1)}
+  return gs.length?gs.reduce((a,b)=>a+b,0)/gs.length:null}
+function kraftIndex(){const A=AN||analyze();const gl=Object.entries(A.byGroup).map(([k,l])=>({k,l:l.filter(x=>!x.start)})).filter(g=>g.l.length);
+  if(!gl.length)return null;const first=gl.reduce((m,g)=>g.l[0].date<m?g.l[0].date:m,'9999-12-31');
+  const pts=[];const d=pDate(weekOf(first));const end=todayStr();
+  while(isoD(d)<=end){const we=new Date(d);we.setDate(we.getDate()+6);const wes=isoD(we);let sum=0,n=0;
+    for(const g of gl){if(g.l[0].date>wes)continue;let best=0;for(const x of g.l){if(x.date>wes)break;if(x.e1>best)best=x.e1}sum+=best/g.l[0].e1;n++}
+    pts.push({date:isoD(d),v:n?sum/n*100:100});d.setDate(d.getDate()+7)}
+  const tops=gl.map(g=>{let b=0;const sp=g.l.map(x=>(b=Math.max(b,x.e1)));return {k:g.k,name:A.gname[g.k],g:b/g.l[0].e1-1,sp,first:g.l[0]}}).sort((a,b)=>b.g-a.g);
+  return {pts,first,tops}}
+function areaSvg(pts,color){const W=340,H=190,pl=6,pr=40,pt=18,pb=24;if(pts.length<2)return `<p class="muted" style="margin:14px 0">Ab der zweiten Trainingswoche siehst du hier deine Kurve.</p>`;
+  const vs=pts.map(p=>p.v);let mn=Math.min(100,...vs),mx=Math.max(...vs);if(mx-mn<4)mx=mn+4;const pad=(mx-mn)*.08;mn-=pad;mx+=pad;
+  const x=i=>pl+(W-pl-pr)*i/(pts.length-1),y=v=>pt+(H-pt-pb)*(1-(v-mn)/(mx-mn));const L=pts.length-1;
+  const line=pts.map((p,i)=>x(i).toFixed(1)+','+y(p.v).toFixed(1)).join(' ');
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Kraftindex von 100 auf ${Math.round(vs[L])}">`;
+  s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(100)}" y2="${y(100)}" stroke="#d9c8b0" stroke-dasharray="3 4"/>`;
+  s+=`<polygon points="${x(0).toFixed(1)},${H-pb} ${line} ${x(L).toFixed(1)},${H-pb}" fill="${color}" fill-opacity=".13"/>`;
+  s+=`<polyline points="${line}" fill="none" stroke="${color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  s+=`<circle cx="${x(L)}" cy="${y(vs[L])}" r="5" fill="${color}"/><text x="${x(L)+8}" y="${y(vs[L])+5}" font-size="14" font-weight="700" fill="${color}">${Math.round(vs[L])}</text>`;
+  let lm='',lx=-99;pts.forEach((p,i)=>{const m=p.date.slice(5,7);if(m!==lm){lm=m;if(x(i)-lx>=16){lx=x(i);s+=`<text x="${x(i)}" y="${H-6}" font-size="10" fill="#8c7a70" text-anchor="middle">${MSHORT[+m-1].slice(0,1)}</text>`}}});
+  return s+'</svg>'}
+function sparkSvg(v,color){if(v.length<2)return '';const W=76,H=28,mn=Math.min(...v),r=(Math.max(...v)-mn)||1;
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" style="flex:0 0 auto"><polyline points="${v.map((a,i)=>(2+(W-4)*i/(v.length-1)).toFixed(1)+','+(H-3-(H-6)*(a-mn)/r).toFixed(1)).join(' ')}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`}
+function renderVerlauf(){const main=document.getElementById('main');const K=kraftIndex();const col=PRESETS.wein.acc;
+  if(!K){main.innerHTML=`<div class="empty"><h2>Dein Verlauf startet mit dem ersten Training</h2><p>Trag Gewichte und Wiederholungen ein, dann wächst hier deine Kurve.</p></div>`;return}
+  const A=AN||analyze();const t=todayStr();const g=K.pts[K.pts.length-1].v/100-1;const wk=weekOf(t);
+  const thisWeek=A.sessions.filter(s=>s.date>=wk).length;const m=stats(...mRange(curYm()));const recs=A.sessions.flatMap(s=>s.recs).slice(-4).reverse();
+  let h=`<section class="card hero"><div class="muted">Deine Kraft seit ${fmtDate(K.first)}</div><div class="hero-n">${g>=.005?fmtPct(g)+' stärker':'Du legst gerade los'}</div>${areaSvg(K.pts,col)}
+    <p class="muted" style="margin:4px 0 0">Kraftindex aus den Bestwerten all deiner Übungen. Mehr Gewicht zählt mehr als mehr Wiederholungen.</p></section>
+    <div class="stats"><div class="stat"><small>Diese Woche</small><b>${thisWeek} ${thisWeek===1?'Training':'Trainings'}</b></div><div class="stat"><small>Serie</small><b>${wochen(curStreak(t))}</b></div>
+    <div class="stat"><small>Rekorde im ${ymName(curYm())}</small><b>${m.recs.length}</b></div><div class="stat"><small>Trainings gesamt</small><b>${A.sessions.length}</b></div></div>`;
+  const tops=K.tops.filter(x=>x.g>0).slice(0,3);
+  if(tops.length)h+=`<h2 class="section-title">Am stärksten gewachsen</h2><section class="card">${tops.map(x=>`<button class="topx" data-act="goEx" data-v="${esc(x.k)}"><span style="flex:1;min-width:0"><b>${esc(x.name)}</b><span class="muted" style="display:block">Start ${fmtSet(x.first)}</span></span>${sparkSvg(x.sp,col)}<b class="topg">${fmtPct(x.g)}</b></button>`).join('')}</section>`;
+  if(recs.length)h+=`<h2 class="section-title">Zuletzt geknackt</h2><section class="card">${recs.map(r=>`<div class="rl"><span>${esc(r.name)}</span><span><b>${fmtSet(r)}</b> <span class="muted">${fmtDate(r.date).slice(0,5)}</span></span></div>`).join('')}</section>`;
+  main.innerHTML=h}
 
 function render(){ensureCur();view.day=todayStr();if(!['progress','settings'].includes(view.tab)&&!plans().find(p=>p.id===view.tab))view.tab=nextPlanId()||plans()[0].id;
   renderTop();if(view.tab==='progress')renderProgress();else if(view.tab==='settings')renderSettings();else renderPlan();renderSheet();renderPool();renderExSheet()}
@@ -890,6 +946,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
   else if(a==='yearNav'){view.year=(view.year||+todayStr().slice(0,4))+(+v);renderProgress()}
   else if(a==='photoYear'){view.photoYear=(view.photoYear||+todayStr().slice(0,4))+(+v);renderProgress()}
   else if(a==='trend'){view.trend=v;renderProgress()}
+  else if(a==='goEx'){view.progKey=v;view.progMode='single';renderProgress();scrollTo(0,0)}
   else if(a==='recap'){openRecap(b.dataset.k,v)}
   else if(a==='recapClose'){view.recap=null;renderRecap()}
   else if(a==='rcNext'){const tr=b.closest('.rc').querySelector('.rc-track');tr.scrollBy({left:tr.clientWidth,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
